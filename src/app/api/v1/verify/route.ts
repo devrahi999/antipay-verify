@@ -6,8 +6,6 @@ import { doc, runTransaction, collection, query, where, getDocs } from 'firebase
 export async function POST(req: NextRequest) {
   try {
     const apiKey = req.headers.get('x-api-key');
-    // If called from the gateway UI, we might handle auth differently, 
-    // but the plan says x-api-key is common.
     if (!apiKey) {
       return NextResponse.json({ status: false, message: 'Missing API Key' }, { status: 401 });
     }
@@ -27,11 +25,14 @@ export async function POST(req: NextRequest) {
     const userId = apiKeyDoc.userId;
 
     // 2. Validate Body
-    const { sessionId, trxId, method } = await req.json();
+    const { sessionId, trxId: rawTrxId, method } = await req.json();
 
-    if (!sessionId || !trxId || !method) {
+    if (!sessionId || !rawTrxId || !method) {
       return NextResponse.json({ status: false, message: 'Missing parameters' }, { status: 400 });
     }
+
+    // Normalize transaction ID (Trim and Uppercase)
+    const trxId = rawTrxId.trim().toUpperCase();
 
     // 3. Start Atomic Transaction
     const result = await runTransaction(db, async (transaction) => {
@@ -45,15 +46,23 @@ export async function POST(req: NextRequest) {
       if (!sessionSnap.exists()) throw new Error('Invalid session');
       const sessionData = sessionSnap.data();
       if (sessionData.status !== 'pending') throw new Error('Already used');
-      if (new Date() > new Date(sessionData.expiresAt)) throw new Error('Session expired');
+      
+      const now = new Date();
+      if (now > new Date(sessionData.expiresAt)) throw new Error('Session expired');
       if (sessionData.userId !== userId) throw new Error('User mismatch');
 
       // Transaction checks
       if (!trxSnap.exists()) throw new Error('Transaction not found');
       const trxData = trxSnap.data();
+      
       if (trxData.status !== 'unused') throw new Error('Already used');
-      if (trxData.source !== method) throw new Error('Method mismatch');
-      if (Number(trxData.amount) !== Number(sessionData.amount)) throw new Error('Amount mismatch');
+      if (trxData.source?.toLowerCase() !== method?.toLowerCase()) throw new Error('Method mismatch');
+      
+      // Strict amount check (handling both float and int)
+      if (Math.abs(Number(trxData.amount) - Number(sessionData.amount)) > 0.01) {
+        throw new Error('Amount mismatch');
+      }
+      
       if (trxData.userId !== userId) throw new Error('User mismatch');
 
       // Execute updates
@@ -75,6 +84,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result);
 
   } catch (error: any) {
+    // Log error internally if needed, but return generic false status
     return NextResponse.json({ 
       status: false, 
       message: error.message || 'Verification failed' 
