@@ -66,15 +66,15 @@ export default function MethodPage() {
     <div 
       className="min-h-screen flex flex-col items-center p-0 relative overflow-x-hidden pb-24"
       style={{ 
-        backgroundColor: '#f8fafc',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='0.6' fill='%23000' fill-opacity='0.04'/%3E%3C/svg%3E")`,
+        backgroundColor: '#eef2f6',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'%3E%3Ccircle cx='40' cy='40' r='38'/%3E%3Ccircle cx='0' cy='0' r='38'/%3E%3Ccircle cx='80' cy='0' r='38'/%3E%3Ccircle cx='0' cy='80' r='38'/%3E%3Ccircle cx='80' cy='80' r='38'/%3E%3C/g%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
-      <div className="w-full max-w-[420px] flex flex-col gap-3.5 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
+      <div className="w-full max-w-[420px] flex flex-col gap-3 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
         
-        {/* Top Bar - Modern Soft Bar */}
-        <div className="mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-3 border border-gray-100/50">
+        {/* Top Bar - Modern White Bar */}
+        <div className="mt-4 h-[60px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-3 border border-gray-100/50">
           <Button 
             variant="ghost" 
             size="icon" 
@@ -102,23 +102,23 @@ export default function MethodPage() {
         </div>
 
         {/* Store Card */}
-        <div className="w-full bg-white rounded-lg border border-gray-100 shadow-sm p-3 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-md border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
-            <Image src="https://picsum.photos/seed/store/120" width={40} height={40} alt="store" className="object-cover" />
+        <div className="w-full bg-white rounded-md border border-gray-100 shadow-sm p-3 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-md border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
+            <Image src="https://picsum.photos/seed/store/120" width={36} height={36} alt="store" className="object-cover" />
           </div>
           <div className="flex flex-col">
-            <h3 className="font-bold text-gray-700 text-xs">BD Esports Arena</h3>
-            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-tight">ইনভয়েস আইডিঃ <span className="text-gray-500">SSICBT940147</span></p>
+            <h3 className="font-bold text-gray-700 text-[10px]">BD Esports Arena</h3>
+            <p className="text-[8px] text-gray-400 font-bold uppercase tracking-tight">ইনভয়েস আইডিঃ <span className="text-gray-500">SSICBT940147</span></p>
           </div>
         </div>
 
         {/* Amount Bar */}
-        <div className="w-full bg-white rounded-lg border border-gray-100 shadow-sm px-4 py-3 flex items-center">
-          <span className="text-base font-black text-[#5F6E8C]">৳145.00</span>
+        <div className="w-full bg-white rounded-md border border-gray-100 shadow-sm px-4 py-2.5 flex items-center">
+          <span className="text-sm font-black text-[#5F6E8C]">৳145.00</span>
         </div>
 
-        {/* Instruction & Input Box - Smaller & Rounded */}
-        <div className={`w-full rounded-xl p-5 ${config.boxBg} text-white shadow-md mb-4`}>
+        {/* Instruction & Input Box */}
+        <div className={`w-full rounded-lg p-5 ${config.boxBg} text-white shadow-md mb-4`}>
           <h2 className="text-[11px] font-black mb-3.5 text-center uppercase tracking-wide">ট্রানজেকশন আইডি দিন</h2>
           
           <div className="relative mb-5">
@@ -130,7 +130,7 @@ export default function MethodPage() {
             />
           </div>
 
-          <div className="space-y-3 text-[10px] font-black leading-relaxed">
+          <div className="space-y-3 text-[10px] leading-relaxed">
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
               <p className="font-bold">
@@ -140,13 +140,13 @@ export default function MethodPage() {
             
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p className="font-bold">"<span className="text-yellow-400 font-black">Send Money</span>" -এ ক্লিক করুন।</p>
+              <p className="font-bold">"<span className="text-yellow-400">Send Money</span>" -এ ক্লিক করুন।</p>
             </div>
 
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
               <div className="flex flex-col gap-1.5">
-                <p className="font-bold">প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-yellow-400 text-xs tracking-widest font-black">{config.number}</span></p>
+                <p className="font-bold">প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-yellow-400 text-xs tracking-widest">{config.number}</span></p>
                 <button 
                   onClick={copyNumber} 
                   className="flex items-center w-fit gap-1 bg-black/10 hover:bg-black/20 px-1.5 py-0.5 rounded transition-colors border border-white/5"
@@ -159,7 +159,7 @@ export default function MethodPage() {
 
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p className="font-bold">টাকার পরিমাণঃ <span className="text-yellow-400 font-black">৳145.00</span></p>
+              <p className="font-bold">টাকার পরিমাণঃ <span className="text-yellow-400">৳145.00</span></p>
             </div>
 
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
@@ -174,17 +174,17 @@ export default function MethodPage() {
 
             <div className="flex items-start gap-2">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p className="font-bold">এখন উপরের বক্সে আপনার <span className="text-yellow-400 font-black">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-400 font-black">VERIFY</span> বাটনে ক্লিক করুন।</p>
+              <p className="font-bold">এখন উপরের বক্সে আপনার <span className="text-yellow-400">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-400">VERIFY</span> বাটনে ক্লিক করুন।</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Verify Button - Flat to Bottom */}
+      {/* Verify Button - Flushed */}
       <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
         <div className="w-full max-w-[420px] pointer-events-auto">
           <Button 
-            className={`w-full h-[60px] rounded-none text-white font-black text-xs tracking-[0.2em] transition-all active:scale-[0.99] ${config.boxBg} hover:brightness-105 shadow-[0_-4px_10px_rgba(0,0,0,0.1)]`}
+            className={`w-full h-[56px] rounded-none text-white font-black text-xs tracking-[0.2em] transition-all active:scale-[0.99] ${config.boxBg} hover:brightness-105`}
           >
             VERIFY
           </Button>
