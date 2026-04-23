@@ -60,32 +60,32 @@ export default function MethodPage() {
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-x-hidden"
+      className="min-h-screen flex flex-col items-center justify-center p-0 sm:p-4 relative overflow-x-hidden"
       style={{ 
         backgroundColor: '#eef2f6',
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
-      <div className="w-full max-w-[420px] bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden">
+      <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0">
         
-        {/* Top Nav Bar */}
-        <div className="flex items-center justify-between px-4 h-12 border-b border-gray-50">
+        {/* Top Nav Bar - Compact */}
+        <div className="flex items-center justify-between px-4 h-12 border-b border-gray-50 bg-white">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-8 h-8 hover:bg-gray-50 text-gray-400"
+            className="w-10 h-10 hover:bg-gray-50 text-gray-500"
             onClick={() => router.back()}
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-7 h-7" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-8 h-8 hover:bg-gray-50 text-gray-400"
+            className="w-10 h-10 hover:bg-gray-50 text-gray-500"
             onClick={() => router.push(`/s/${sessionId}`)}
           >
-            <X className="w-6 h-6" />
+            <X className="w-7 h-7" />
           </Button>
         </div>
 
@@ -115,7 +115,7 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Instruction & Input Box */}
+        {/* Instruction & Input Box - Specific Green #A7E693 */}
         <div className="mx-5 mb-6 rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-sm">
           <h2 className="text-[12px] font-black mb-4 text-center uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           
@@ -177,20 +177,21 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Verify Button - At the bottom of the container */}
-        <div className="px-5 pb-5">
+        {/* Verify Button - Bottom Action */}
+        <div className="px-5 pb-5 mt-auto sm:mt-0">
           <Button 
-            className="w-full h-[48px] rounded-lg text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-md rounded-t-xl"
+            className="w-full h-11 rounded-t-xl rounded-b-lg text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0"
           >
             VERIFY
           </Button>
         </div>
       </div>
       
-      {/* Policy Text */}
-      <div className="mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">
+      {/* Policy Text - Only visible on desktop or scroll */}
+      <div className="hidden sm:block mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">
         Secured by AntiPay Gateway
       </div>
     </div>
   );
 }
+
