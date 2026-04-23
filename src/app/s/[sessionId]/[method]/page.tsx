@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -65,127 +66,117 @@ export default function MethodPage() {
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center p-0 relative overflow-x-hidden pb-24">
       {/* Background Pattern */}
       <div 
-        className="fixed inset-0 pointer-events-none opacity-[0.03]" 
+        className="fixed inset-0 pointer-events-none opacity-[0.02]" 
         style={{ 
           backgroundImage: 'url("https://www.transparenttextures.com/patterns/diamond-upholstery.png")',
           backgroundColor: '#F8FAFC'
         }} 
       />
 
-      <div className="w-full max-w-[420px] flex flex-col gap-4 z-10 animate-in fade-in slide-in-from-bottom-4 duration-500 px-3">
+      <div className="w-full max-w-[420px] flex flex-col gap-4 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
         
-        {/* 1. Unified Modern Top Bar */}
-        <div className="mt-4 h-[64px] bg-[#f2f2f2] rounded-[20px] shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4">
+        {/* Top Bar - No circles, reduced radius/shadow */}
+        <div className="mt-4 h-[60px] bg-[#f2f2f2] rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-between px-4">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="rounded-full w-10 h-10 bg-white shadow-sm border-none hover:bg-white/90"
+            className="w-10 h-10 hover:bg-black/5 text-gray-400"
             onClick={() => router.back()}
           >
-            <ChevronLeft className="w-5 h-5 text-gray-400" />
+            <ChevronLeft className="w-5 h-5" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="rounded-full w-10 h-10 bg-white shadow-sm border-none hover:bg-white/90"
+            className="w-10 h-10 hover:bg-black/5 text-gray-400"
             onClick={() => router.push(`/s/${sessionId}`)}
           >
-            <X className="w-5 h-5 text-gray-400" />
+            <X className="w-5 h-5" />
           </Button>
         </div>
 
-        {/* 2. Logo Section */}
-        <div className="flex flex-col items-center justify-center py-2">
-          <div className="relative h-14 w-32">
+        {/* Logo Section */}
+        <div className="flex flex-col items-center justify-center py-1">
+          <div className="relative h-12 w-28">
              <img src={config.logo} alt={config.name} className="h-full w-full object-contain" />
           </div>
-          <span className="text-[10px] font-black text-pink-600 tracking-[0.2em] mt-1">PERSONAL</span>
+          <span className="text-[9px] font-black text-pink-600 tracking-[0.2em] mt-1">PERSONAL</span>
         </div>
 
-        {/* 3. Store Card */}
-        <div className="w-full bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] p-4 flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full border border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0 shadow-inner">
-            <Image src="https://picsum.photos/seed/store/120" width={56} height={56} alt="store" className="object-cover" />
+        {/* Store Card - Reduced shadow/radius */}
+        <div className="w-full bg-white rounded-xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.03)] p-4 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-lg border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
+            <Image src="https://picsum.photos/seed/store/120" width={48} height={48} alt="store" className="object-cover" />
           </div>
           <div className="flex flex-col">
-            <h3 className="font-bold text-gray-700 text-base">BD Esports Arena</h3>
-            <p className="text-[11px] text-gray-400 font-medium">ইনভয়েস আইডিঃ <span className="font-bold text-gray-500 uppercase">ssicbt940147</span></p>
+            <h3 className="font-bold text-gray-700 text-sm">BD Esports Arena</h3>
+            <p className="text-[10px] text-gray-400 font-medium">ইনভয়েস আইডিঃ <span className="font-bold text-gray-500 uppercase">ssicbt940147</span></p>
           </div>
         </div>
 
-        {/* 4. Amount Bar */}
-        <div className="w-full bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] px-5 py-4 flex items-center">
-          <span className="text-xl font-extrabold text-[#5F6E8C]">৳145.00</span>
+        {/* Amount Bar - Reduced shadow/radius */}
+        <div className="w-full bg-white rounded-xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.03)] px-5 py-3.5 flex items-center">
+          <span className="text-lg font-extrabold text-[#5F6E8C]">৳145.00</span>
         </div>
 
-        {/* 5. Instruction & Input Box */}
-        <div className={`w-full rounded-[20px] p-6 ${config.boxBg} text-white shadow-xl mb-4`}>
-          <h2 className="text-[15px] font-bold mb-5 text-center">ট্রানজেকশন আইডি দিন</h2>
+        {/* Instruction & Input Box - Smaller radius and reduced padding */}
+        <div className={`w-full rounded-xl p-5 ${config.boxBg} text-white shadow-lg mb-4`}>
+          <h2 className="text-sm font-bold mb-4 text-center">ট্রানজেকশন আইডি দিন</h2>
           
-          <div className="relative mb-8">
+          <div className="relative mb-6">
             <Input 
               value={trxId}
               onChange={(e) => setTrxId(e.target.value)}
               placeholder="ট্রানজেকশন আইডি দিন"
-              className="bg-white border-none text-gray-700 placeholder:text-gray-400 h-12 rounded-xl text-center text-sm font-bold focus-visible:ring-0 shadow-inner"
+              className="bg-white border-none text-gray-700 placeholder:text-gray-300 h-10 rounded-lg text-center text-xs font-bold focus-visible:ring-0"
             />
           </div>
 
-          <div className="space-y-4 text-[12px] font-medium leading-relaxed">
-            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
-              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+          <div className="space-y-3 text-[11px] font-medium leading-relaxed">
+            <div className="flex items-start gap-2.5 pb-2.5 border-b border-white/10">
+              <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
               <p>
-                {config.dial} ডায়াল করে আপনার {config.name.toUpperCase()} মোবাইল মেনুতে যান অথবা {config.name.toUpperCase()} অ্যাপে যান।
+                {config.dial} ডায়াল করে অথবা {config.name.toUpperCase()} অ্যাপে যান।
               </p>
             </div>
             
-            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
-              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+            <div className="flex items-start gap-2.5 pb-2.5 border-b border-white/10">
+              <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
               <p>"<span className="text-yellow-400 font-bold">Send Money</span>" -এ ক্লিক করুন।</p>
             </div>
 
-            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
-              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
-              <div className="flex flex-col gap-2">
-                <p>প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-yellow-400 font-bold text-base tracking-wide">{config.number}</span></p>
+            <div className="flex items-start gap-2.5 pb-2.5 border-b border-white/10">
+              <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
+              <div className="flex flex-col gap-1.5">
+                <p>প্রাপক নম্বরটি লিখুনঃ <span className="text-yellow-400 font-bold text-sm tracking-wide">{config.number}</span></p>
                 <button 
                   onClick={copyNumber} 
-                  className="flex items-center w-fit gap-1.5 bg-black/20 hover:bg-black/30 px-3 py-1 rounded-lg transition-colors border border-white/10"
+                  className="flex items-center w-fit gap-1 bg-black/10 hover:bg-black/20 px-2 py-0.5 rounded transition-colors border border-white/5"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span className="text-[10px] font-bold uppercase">Copy</span>
+                  {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  <span className="text-[9px] font-bold uppercase">Copy</span>
                 </button>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
-              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+            <div className="flex items-start gap-2.5 pb-2.5 border-b border-white/10">
+              <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
               <p>টাকার পরিমাণঃ <span className="text-yellow-400 font-bold">৳145.00</span></p>
             </div>
 
-            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
-              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
-              <p>নিশ্চিত করতে এখন আপনার {config.name.toUpperCase()} মোবাইল মেনু পিন লিখুন।</p>
-            </div>
-
-            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
-              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
-              <p>সবকিছু ঠিক থাকলে, আপনি {config.name.toUpperCase()} থেকে একটি নিশ্চিতকরণ বার্তা পাবেন।</p>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
-              <p>এখন উপরের বক্সে আপনার <span className="text-yellow-400 font-bold">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-400 font-bold">VERIFY</span> বাটনে ক্লিক করুন।</p>
+            <div className="flex items-start gap-2.5">
+              <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
+              <p>সবশেষে Transaction ID দিয়ে <span className="text-yellow-400 font-bold">VERIFY</span> করুন।</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 6. Fixed Bottom Verify Button */}
+      {/* Verify Button - Reduced radius */}
       <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
         <div className="w-full max-w-[420px] pointer-events-auto">
           <Button 
-            className={`w-full h-[64px] rounded-t-[24px] rounded-b-none text-white font-bold text-base tracking-widest transition-all active:scale-[0.98] ${config.boxBg} hover:brightness-110 shadow-[0_-8px_20px_-4px_rgba(0,0,0,0.1)]`}
+            className={`w-full h-[60px] rounded-t-xl rounded-b-none text-white font-bold text-sm tracking-widest transition-all active:scale-[0.99] ${config.boxBg} hover:brightness-105 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]`}
           >
             VERIFY
           </Button>
