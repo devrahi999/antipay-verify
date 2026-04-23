@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, X, Copy, Check } from "lucide-react";
+import { ChevronLeft, X, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -14,33 +14,33 @@ const METHOD_CONFIG = {
     name: "bKash",
     logo: "https://i.imgur.com/GeOlI04.png",
     color: "#E2136E",
-    bg: "bg-[#E2136E]",
+    boxBg: "bg-[#E2136E]",
     dial: "*247#",
-    number: "017XXXXXXXX",
+    number: "01786543210",
   },
   nagad: {
     name: "Nagad",
     logo: "https://i.imgur.com/RZBbEjb.png",
-    color: "#F7941D",
-    bg: "bg-[#F7941D]",
+    color: "#D12026",
+    boxBg: "bg-[#D12026]",
     dial: "*167#",
-    number: "018XXXXXXXX",
+    number: "01336166870",
   },
   rocket: {
     name: "Rocket",
     logo: "https://i.imgur.com/wolCFJc.png",
     color: "#8C3494",
-    bg: "bg-[#8C3494]",
+    boxBg: "bg-[#8C3494]",
     dial: "*322#",
-    number: "019XXXXXXXX",
+    number: "01912345678",
   },
   upay: {
     name: "Upay",
     logo: "https://i.imgur.com/iqgxYRk.png",
     color: "#FFD400",
-    bg: "bg-[#FFD400]",
+    boxBg: "bg-[#FFD400]",
     dial: "*268#",
-    number: "013XXXXXXXX",
+    number: "01312345678",
   },
 } as const;
 
@@ -63,90 +63,116 @@ export default function MethodPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F1F5F9] flex flex-col items-center justify-start sm:py-8">
-      <div className="w-full max-w-[420px] bg-white sm:rounded-[24px] shadow-sm flex flex-col min-h-screen sm:min-h-fit relative overflow-hidden">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-start sm:py-8">
+      {/* Subtle Background Pattern */}
+      <div 
+        className="fixed inset-0 pointer-events-none opacity-[0.03]" 
+        style={{ 
+          backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")',
+          backgroundColor: '#F8FAFC'
+        }} 
+      />
+
+      <div className="w-full max-w-[420px] bg-white sm:rounded-[24px] shadow-sm flex flex-col min-h-screen sm:min-h-fit relative overflow-hidden z-10 border border-gray-100">
         
         {/* Top Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between p-4 px-6">
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="icon" 
-            className="rounded-full w-8 h-8"
+            className="rounded-full w-9 h-9 border-gray-200 text-gray-400"
             onClick={() => router.back()}
           >
-            <ArrowLeft className="w-5 h-5 text-gray-900" />
+            <ChevronLeft className="w-5 h-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-full w-8 h-8">
-            <X className="w-5 h-5 text-gray-900" />
+          <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 text-gray-400">
+            <X className="w-5 h-5" />
           </Button>
         </div>
 
         <div className="flex-1 overflow-y-auto pb-24">
           {/* Method Logo */}
-          <div className="flex justify-center py-6">
-            <div className="relative h-12 w-32">
+          <div className="flex flex-col items-center justify-center py-4">
+            <div className="relative h-14 w-32">
                <img src={config.logo} alt={config.name} className="h-full w-full object-contain" />
             </div>
+            <span className="text-[10px] font-bold text-orange-500 mt-[-4px]">Personal</span>
           </div>
 
           {/* Store & Invoice Card */}
-          <div className="px-4 mb-4">
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-               <div className="w-10 h-10 rounded-full bg-white shadow-sm overflow-hidden relative">
-                 <Image src="https://picsum.photos/seed/store/100" fill alt="store" className="object-cover" />
+          <div className="px-6 mb-4">
+            <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-50">
+               <div className="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center overflow-hidden bg-white shrink-0">
+                 <Image src="https://picsum.photos/seed/store/100" width={40} height={40} alt="store" className="object-cover" />
                </div>
-               <div>
-                 <h3 className="font-bold text-gray-700 text-sm">BD Esports Arena</h3>
-                 <p className="text-[10px] text-gray-400 uppercase tracking-wider">Invoice ID: #67B66D606C7</p>
+               <div className="flex flex-col">
+                 <h3 className="font-bold text-gray-600 text-[15px]">BD Esports Arena</h3>
+                 <p className="text-[11px] text-gray-400 font-medium">ইনভয়েস আইডিঃ <span className="font-bold text-gray-500 uppercase">3DH7TG934476</span></p>
                </div>
             </div>
           </div>
 
           {/* Amount Display */}
-          <div className="text-center py-4 mb-4">
-            <h1 className="text-4xl font-black text-gray-800">৳145.00</h1>
+          <div className="px-6 mb-4">
+            <div className="bg-white border border-gray-100 rounded-xl p-3 shadow-sm">
+              <h1 className="text-2xl font-bold text-gray-500">৳145.00</h1>
+            </div>
           </div>
 
           {/* Instruction Box */}
-          <div className="px-4">
-            <div className={`rounded-2xl p-6 ${config.bg} text-white shadow-lg`}>
-              <h2 className="text-lg font-bold mb-4 text-center">ট্রানজেকশন আইডি দিন</h2>
+          <div className="px-0 sm:px-0">
+            <div className={`rounded-t-[32px] pt-8 pb-12 px-8 ${config.boxBg} text-white shadow-lg min-h-[400px]`}>
+              <h2 className="text-[18px] font-bold mb-6 text-center">ট্রানজেকশন আইডি দিন</h2>
               
-              <Input 
-                value={trxId}
-                onChange={(e) => setTrxId(e.target.value)}
-                placeholder="ট্রানজেকশন আইডি দিন"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 h-12 text-center text-lg mb-6 focus-visible:ring-offset-0 focus-visible:ring-white/30"
-              />
+              <div className="relative mb-8">
+                <Input 
+                  value={trxId}
+                  onChange={(e) => setTrxId(e.target.value)}
+                  placeholder="ট্রানজেকশন আইডি দিন"
+                  className="bg-white border-none text-gray-800 placeholder:text-gray-300 h-14 rounded-xl text-center text-lg focus-visible:ring-2 focus-visible:ring-blue-400"
+                />
+              </div>
 
-              <div className="space-y-4 text-sm font-medium">
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs">1</span>
-                  <p>আপনার ফোন থেকে <span className="text-white font-bold underline">{config.dial}</span> ডায়াল করুন।</p>
+              <div className="space-y-4 text-[13px] leading-relaxed">
+                <div className="flex items-start gap-3 pb-3 border-b border-white/10">
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+                  <p>
+                    {config.dial} ডায়াল করে আপনার {config.name.toUpperCase()} মোবাইল মেনুতে যান অথবা {config.name.toUpperCase()} অ্যাপে যান।
+                  </p>
                 </div>
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs">2</span>
-                  <p>"Send Money" অপশনটি সিলেক্ট করুন।</p>
+                
+                <div className="flex items-start gap-3 pb-3 border-b border-white/10">
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+                  <p>
+                    "<span className="text-yellow-400 font-bold">Send Money</span>" - এ ক্লিক করুন।
+                  </p>
                 </div>
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs">3</span>
-                  <div className="flex-1">
-                    <p className="mb-1">প্রাপক নাম্বার হিসেবে নিচের নাম্বারটি দিন:</p>
-                    <div className="flex items-center justify-between bg-white/20 rounded-lg px-3 py-2 border border-white/30">
-                      <span className="font-mono text-base">{config.number}</span>
-                      <button onClick={copyNumber} className="hover:scale-110 transition-transform">
-                        {copied ? <Check className="w-4 h-4 text-green-300" /> : <Copy className="w-4 h-4" />}
+
+                <div className="flex items-start gap-3 pb-3 border-b border-white/10">
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+                  <div className="flex flex-col gap-2">
+                    <p>প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-yellow-400 font-bold text-lg">{config.number}</span>
+                      <button 
+                        onClick={copyNumber} 
+                        className="flex items-center gap-1 bg-black/30 hover:bg-black/40 px-3 py-1 rounded-md transition-colors border border-white/10"
+                      >
+                        {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        <span className="text-[10px] font-bold">Copy</span>
                       </button>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs">4</span>
-                  <p>টাকার পরিমাণ <span className="bg-white text-black px-2 py-0.5 rounded font-bold">৳১৪৫.০০</span> দিন।</p>
+
+                <div className="flex items-start gap-3 pb-3 border-b border-white/10">
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+                  <p>টাকার পরিমাণঃ <span className="text-yellow-400 font-bold">৳145.00</span></p>
                 </div>
+
                 <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs">5</span>
-                  <p>পিন (PIN) দিয়ে লেনদেন সম্পন্ন করুন।</p>
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+                  <p>নিশ্চিত করতে এখন আপনার {config.name.toUpperCase()} মোবাইল মেনু পিন লিখুন।</p>
                 </div>
               </div>
             </div>
@@ -154,9 +180,9 @@ export default function MethodPage() {
         </div>
 
         {/* Verify Button */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-50">
+        <div className="absolute bottom-0 left-0 right-0">
           <Button 
-            className={`w-full h-14 rounded-xl text-white font-bold text-lg transition-transform active:scale-95 ${config.bg} hover:brightness-110 shadow-lg`}
+            className={`w-full h-14 rounded-t-2xl rounded-b-none text-white font-bold text-base transition-all active:scale-[0.98] ${config.boxBg} hover:brightness-110 shadow-[0_-4px_10px_rgba(0,0,0,0.1)]`}
           >
             VERIFY
           </Button>
