@@ -60,38 +60,38 @@ export default function MethodPage() {
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center justify-center p-0 sm:p-4 relative overflow-x-hidden"
+      className="min-h-screen flex flex-col items-center justify-start sm:justify-center p-0 sm:p-4 relative overflow-x-hidden"
       style={{ 
         backgroundColor: '#eef2f6',
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
-      <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0">
+      <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0 pb-24 sm:pb-0">
         
-        {/* Top Nav Bar - Compact */}
-        <div className="flex items-center justify-between px-4 h-12 border-b border-gray-50 bg-white">
+        {/* Top Nav Bar - Fixed/Sticky on mobile with clear background */}
+        <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14 border-b border-gray-200 bg-white shadow-sm sm:shadow-none">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-500"
+            className="w-12 h-12 hover:bg-gray-50 text-gray-700"
             onClick={() => router.back()}
           >
-            <ChevronLeft className="w-7 h-7" />
+            <ChevronLeft className="w-8 h-8" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-500"
+            className="w-12 h-12 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push(`/s/${sessionId}`)}
           >
-            <X className="w-7 h-7" />
+            <X className="w-8 h-8" />
           </Button>
         </div>
 
         {/* Logo Section */}
         <div className="flex flex-col items-center justify-center py-6">
-          <div className="relative h-12 w-28">
+          <div className="relative h-12 w-32">
              <img src={config.logo} alt={config.name} className="h-full w-full object-contain" />
           </div>
           <span className="text-[9px] font-bold text-gray-400 tracking-[0.2em] mt-1 uppercase">Official Payment Partner</span>
@@ -116,7 +116,7 @@ export default function MethodPage() {
         </div>
 
         {/* Instruction & Input Box - Specific Green #A7E693 */}
-        <div className="mx-5 mb-6 rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-sm">
+        <div className="mx-5 mb-6 rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-sm border border-black/5">
           <h2 className="text-[12px] font-black mb-4 text-center uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           
           <div className="relative mb-5">
@@ -177,10 +177,10 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Verify Button - Bottom Action Flush on Mobile */}
-        <div className="mt-auto sm:mt-0 px-0 pb-0 sm:px-5 sm:pb-5">
+        {/* Verify Button - Fixed at bottom on mobile, full width */}
+        <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white sm:bg-transparent px-0 sm:px-5 pb-0 sm:pb-5">
           <Button 
-            className="w-full h-12 sm:h-11 rounded-t-xl rounded-b-none sm:rounded-b-lg text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0"
+            className="w-full h-14 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-[0_-4px_10px_rgba(0,0,0,0.05)] sm:shadow-md border-0"
           >
             VERIFY
           </Button>

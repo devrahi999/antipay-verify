@@ -33,12 +33,12 @@ export default function MethodSelect() {
     >
       <div className="w-full max-w-[420px] flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
         
-        {/* Top Bar - More compact height with larger icons */}
-        <div className="mx-3 mt-4 h-[50px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4 border border-gray-100/50">
+        {/* Top Bar - Solid with border for mobile */}
+        <div className="mx-3 mt-4 h-[56px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4 border border-gray-100">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-500"
+            className="w-10 h-10 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push('/')}
           >
             <Home className="w-6 h-6" />
@@ -46,7 +46,7 @@ export default function MethodSelect() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-500"
+            className="w-10 h-10 hover:bg-gray-50 text-gray-700"
           >
             <X className="w-6 h-6" />
           </Button>
@@ -54,7 +54,7 @@ export default function MethodSelect() {
 
         {/* Store Info Section */}
         <div className="flex flex-col items-center py-6 px-6">
-          <div className="relative w-14 h-14 rounded-lg overflow-hidden border border-white shadow-sm mb-3">
+          <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white shadow-sm mb-3 bg-white">
             <Image 
               src="https://picsum.photos/seed/store/200" 
               alt="Store Logo" 
@@ -63,7 +63,7 @@ export default function MethodSelect() {
               data-ai-hint="store logo"
             />
           </div>
-          <h2 className="text-xs font-bold text-gray-700 mb-3 text-center">BD Esports Arena</h2>
+          <h2 className="text-xs font-black text-gray-700 mb-3 text-center uppercase tracking-wide">BD Esports Arena</h2>
           
           <div className="flex gap-2">
             <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-gray-100 bg-white text-gray-400 shadow-none">
@@ -80,7 +80,7 @@ export default function MethodSelect() {
 
         {/* Category Tab */}
         <div className="px-4 mb-4">
-          <Button className="w-full bg-[#10853D] hover:bg-[#0d6e32] text-white font-bold h-10 rounded-lg shadow-sm tracking-wide text-[10px] uppercase">
+          <Button className="w-full bg-[#10853D] hover:bg-[#0d6e32] text-white font-black h-11 rounded-lg shadow-sm tracking-widest text-[10px] uppercase">
             মোবাইল ব্যাংকিং
           </Button>
         </div>
@@ -91,23 +91,23 @@ export default function MethodSelect() {
             <button
               key={method.id}
               onClick={() => handleSelect(method.id)}
-              className="group flex items-center justify-center p-3 h-14 bg-white border border-gray-100 rounded-lg shadow-sm hover:border-green-200 transition-all active:scale-95"
+              className="group flex items-center justify-center p-3 h-16 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-green-400 transition-all active:scale-95"
             >
               <div className="relative w-full h-full flex items-center justify-center">
                 <img 
                   src={method.logo} 
                   alt={method.name}
-                  className="max-h-7 max-w-full object-contain"
+                  className="max-h-8 max-w-full object-contain"
                 />
               </div>
             </button>
           ))}
         </div>
 
-        {/* Bottom Amount Bar - Flushed */}
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
-          <div className="w-full max-w-[420px] h-[56px] bg-[#E8F5E9] flex items-center justify-center border-t border-green-100 pointer-events-auto">
-            <span className="text-[#10853D] font-black text-xs uppercase">Pay ৳145.00</span>
+        {/* Bottom Amount Bar - Fixed at bottom */}
+        <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50">
+          <div className="w-full max-w-[420px] h-16 bg-[#E8F5E9] flex items-center justify-center border-t border-green-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+            <span className="text-[#10853D] font-black text-xs uppercase tracking-[0.2em]">Pay ৳145.00</span>
           </div>
         </div>
       </div>
