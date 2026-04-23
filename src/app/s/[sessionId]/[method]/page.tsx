@@ -69,12 +69,12 @@ export default function MethodPage() {
     >
       <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0 pb-24 sm:pb-0">
         
-        {/* Top Nav Bar - Fixed/Sticky on mobile with clear background */}
-        <div className="sticky top-0 z-50 flex items-center justify-between px-4 h-14 border-b border-gray-200 bg-white shadow-sm sm:shadow-none">
+        {/* Top Nav Bar - Card style on mobile */}
+        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-14 sm:h-14 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-12 h-12 hover:bg-gray-50 text-gray-700"
+            className="w-10 h-10 hover:bg-gray-50 text-gray-700"
             onClick={() => router.back()}
           >
             <ChevronLeft className="w-8 h-8" />
@@ -82,7 +82,7 @@ export default function MethodPage() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-12 h-12 hover:bg-gray-50 text-gray-700"
+            className="w-10 h-10 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push(`/s/${sessionId}`)}
           >
             <X className="w-8 h-8" />
