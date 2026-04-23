@@ -1,7 +1,15 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
-import { doc, runTransaction, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, runTransaction, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+
+// Helper function to handle both Firestore Timestamps and ISO strings
+function parseDate(val: any): Date {
+  if (!val) return new Date(0);
+  if (val instanceof Timestamp) return val.toDate();
+  if (typeof val.toDate === 'function') return val.toDate();
+  return new Date(val);
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key
+    // 1. Validate API Key - Ensure this key exists in your api_keys collection
     const apiKeysRef = collection(db, 'api_keys');
     const q = query(apiKeysRef, where('key', '==', apiKey), where('status', '==', 'active'));
     const querySnapshot = await getDocs(q);
@@ -22,7 +30,7 @@ export async function POST(req: NextRequest) {
     }
 
     const apiKeyDoc = querySnapshot.docs[0].data();
-    const userId = apiKeyDoc.userId;
+    const userIdFromKey = apiKeyDoc.userId;
 
     // 2. Validate Body
     const { sessionId, trxId: rawTrxId, method } = await req.json();
@@ -47,23 +55,30 @@ export async function POST(req: NextRequest) {
       const sessionData = sessionSnap.data();
       if (sessionData.status !== 'pending') throw new Error('Already used');
       
-      const now = new Date();
-      if (now > new Date(sessionData.expiresAt)) throw new Error('Session expired');
-      if (sessionData.userId !== userId) throw new Error('User mismatch');
+      const expiresAt = parseDate(sessionData.expiresAt);
+      if (new Date() > expiresAt) throw new Error('Session expired');
+      
+      // Ensure the session belongs to the user associated with the API Key
+      if (sessionData.userId !== userIdFromKey) throw new Error('User mismatch');
 
       // Transaction checks
       if (!trxSnap.exists()) throw new Error('Transaction not found');
       const trxData = trxSnap.data();
       
       if (trxData.status !== 'unused') throw new Error('Already used');
+      
+      // Method check
       if (trxData.source?.toLowerCase() !== method?.toLowerCase()) throw new Error('Method mismatch');
       
-      // Strict amount check (handling both float and int)
-      if (Math.abs(Number(trxData.amount) - Number(sessionData.amount)) > 0.01) {
+      // Amount check (Flexible number handling)
+      const sessionAmount = Number(sessionData.amount);
+      const trxAmount = Number(trxData.amount);
+      if (Math.abs(trxAmount - sessionAmount) > 0.01) {
         throw new Error('Amount mismatch');
       }
       
-      if (trxData.userId !== userId) throw new Error('User mismatch');
+      // Transaction must belong to the same merchant user
+      if (trxData.userId !== userIdFromKey) throw new Error('Transaction user mismatch');
 
       // Execute updates
       transaction.update(trxRef, { status: 'used' });
@@ -77,14 +92,13 @@ export async function POST(req: NextRequest) {
       return {
         status: 'verified',
         trxId: trxId,
-        amount: sessionData.amount
+        amount: sessionAmount
       };
     });
 
     return NextResponse.json(result);
 
   } catch (error: any) {
-    // Log error internally if needed, but return generic false status
     return NextResponse.json({ 
       status: false, 
       message: error.message || 'Verification failed' 
