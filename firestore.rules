@@ -4,9 +4,9 @@ service cloud.firestore {
 
     // --- AntiPay Gateway Rules (At Top for Priority) ---
 
-    match /api_keys/{keyId} {
-      // API routes use client SDK on server, needs broad read
-      allow read: if true; 
+    match /stores/{storeId} {
+      // Allow API routes to query stores by apiKey field
+      allow read: if true;
       allow write: if false; // Only via console/admin
     }
 
@@ -23,7 +23,7 @@ service cloud.firestore {
       allow read, write: if true;
     }
 
-    // --- Existing System Rules ---
+    // --- Existing System Rules (Preserved) ---
 
     function isSignedIn() {
       return request.auth != null;
@@ -52,6 +52,8 @@ service cloud.firestore {
       allow write: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
     }
 
+    // This specific match for stores is already handled above in the AntiPay section
+    // but preserving the original owner-based rules for management
     match /stores/{storeId} {
       allow get, update, delete: if isSignedIn() && (isAdmin() || (resource != null && resource.data.userId == request.auth.uid));
       allow create: if isSignedIn();
