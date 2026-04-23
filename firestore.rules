@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      
+      match /{allSubCollections=**} {
+        allow read, write: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      }
+    }
+    
+    match /users {
+      allow list: if isAdmin();
+    }
+
+    match /user_plans/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin() || (isSignedIn() && request.auth.uid == userId);
+    }
+
+    match /stores/{storeId} {
+      allow get, update, delete: if isSignedIn() && (isAdmin() || (resource != null && resource.data.userId == request.auth.uid));
+      allow create: if isSignedIn();
+      allow list: if isSignedIn() && (isAdmin() || request.query.limit <= 100);
+    }
+    
+    match /subscriptionPlans/{planId} {
+      allow get, list: if true;
+      allow write: if isAdmin();
+    }
+
+    match /plan_transactions/{txId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn();
+    }
+
+    match /devices/{brandId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Global settings access
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /{allPaths=**}/paymentSessions/{sessionId} {
+      allow read: if isAdmin();
+    }
+
+    // --- AntiPay Gateway Rules ---
+
+    match /api_keys/{keyId} {
+      // API routes use unauthenticated client SDK on server
+      allow read: if true; 
+      allow write: if isAdmin();
+    }
+
+    match /payment_sessions/{sessionId} {
+      // Public needs to read session info to show amount/details on checkout
+      allow get: if true;
+      allow list: if isAdmin();
+      // Server-side API creates/updates sessions
+      allow create, update: if true;
+    }
+
+    match /transactions/{trxId} {
+      // Securely handled via API, but needs broad access for prototype logic
+      allow read, write: if true;
+    }
+  }
+}
