@@ -1,15 +1,15 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Home, CheckCircle2, User, FileText, Taka } from "lucide-react";
+import { Home, CheckCircle2, User, FileText, Banknote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useFirestore } from "@/firebase";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
-export default function SuccessPage() {
+function SuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("sessionId");
@@ -74,13 +74,13 @@ export default function SuccessPage() {
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center justify-start sm:justify-center p-0 sm:p-4 relative overflow-x-hidden"
+      className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-x-hidden"
       style={bgPattern}
     >
-      <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0">
+      <div className="w-full sm:max-w-[420px] bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden">
         
         {/* Success Banner */}
-        <div className="px-5 mt-8 sm:mt-6">
+        <div className="px-5 mt-8">
           <div className="bg-white rounded-xl border border-green-100 overflow-hidden shadow-md">
             <div className="bg-[#10853D] py-3 flex items-center justify-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-white" />
@@ -116,7 +116,7 @@ export default function SuccessPage() {
             <div className="p-5 space-y-4">
               <div className="flex justify-between items-center text-[10px]">
                 <span className="text-gray-400 font-bold uppercase">ইনভয়েস আইডিঃ</span>
-                <span className="text-gray-700 font-black">{session?.sessionId?.slice(0, 16).toUpperCase()}</span>
+                <span className="text-gray-700 font-black">{session?.sessionId?.toUpperCase()}</span>
               </div>
               <div className="flex justify-between items-center text-[10px]">
                 <span className="text-gray-400 font-bold uppercase">টাকার পরিমাণঃ</span>
@@ -131,10 +131,10 @@ export default function SuccessPage() {
         </div>
 
         {/* Return Button */}
-        <div className="px-5 pb-12 sm:pb-8">
+        <div className="px-5 pb-8">
           <Button 
             onClick={handleHome}
-            className="w-full h-12 sm:h-11 bg-[#10853D] hover:bg-[#0d6e32] text-white font-black text-xs rounded-xl shadow-[0_4px_15px_rgba(16,133,61,0.2)] gap-3 flex items-center justify-center transition-all active:scale-[0.98] uppercase tracking-[0.15em]"
+            className="w-full h-11 bg-[#10853D] hover:bg-[#0d6e32] text-white font-black text-xs rounded-xl shadow-[0_4px_15px_rgba(16,133,61,0.2)] gap-3 flex items-center justify-center transition-all active:scale-[0.98] uppercase tracking-[0.15em]"
           >
             <Home className="w-5 h-5" />
             <span>হোম পেজে ফিরে যান</span>
@@ -142,9 +142,21 @@ export default function SuccessPage() {
         </div>
       </div>
 
-      <div className="hidden sm:block mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">
+      <div className="mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">
         Secured by AntiPay Gateway
       </div>
     </div>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <main className="flex min-h-screen items-center justify-center bg-[#F7F8F9]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </main>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }
