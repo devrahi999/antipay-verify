@@ -14,7 +14,6 @@ const METHOD_CONFIG = {
     name: "bKash",
     logo: "https://i.imgur.com/GeOlI04.png",
     color: "#E2136E",
-    boxBg: "bg-[#E2136E]",
     dial: "*247#",
     number: "01336166870",
   },
@@ -22,7 +21,6 @@ const METHOD_CONFIG = {
     name: "Nagad",
     logo: "https://i.imgur.com/RZBbEjb.png",
     color: "#D12026",
-    boxBg: "bg-[#D12026]",
     dial: "*167#",
     number: "01786543210",
   },
@@ -30,7 +28,6 @@ const METHOD_CONFIG = {
     name: "Rocket",
     logo: "https://i.imgur.com/wolCFJc.png",
     color: "#8C3494",
-    boxBg: "bg-[#8C3494]",
     dial: "*322#",
     number: "01912345678",
   },
@@ -38,7 +35,6 @@ const METHOD_CONFIG = {
     name: "Upay",
     logo: "https://i.imgur.com/iqgxYRk.png",
     color: "#FFD400",
-    boxBg: "bg-[#FFD400]",
     dial: "*268#",
     number: "01312345678",
   },
@@ -64,62 +60,63 @@ export default function MethodPage() {
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center p-0 relative overflow-x-hidden pb-24"
+      className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-x-hidden"
       style={{ 
         backgroundColor: '#eef2f6',
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
-      <div className="w-full max-w-[420px] flex flex-col gap-4 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
+      <div className="w-full max-w-[420px] bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden">
         
-        {/* Top Bar */}
-        <div className="mt-4 h-[50px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4 border border-gray-100/50">
+        {/* Top Nav Bar */}
+        <div className="flex items-center justify-between px-4 h-12 border-b border-gray-50">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-500"
+            className="w-8 h-8 hover:bg-gray-50 text-gray-400"
             onClick={() => router.back()}
           >
-            <ChevronLeft className="w-8 h-8" />
+            <ChevronLeft className="w-6 h-6" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-500"
+            className="w-8 h-8 hover:bg-gray-50 text-gray-400"
             onClick={() => router.push(`/s/${sessionId}`)}
           >
-            <X className="w-8 h-8" />
+            <X className="w-6 h-6" />
           </Button>
         </div>
 
         {/* Logo Section */}
-        <div className="flex flex-col items-center justify-center py-1">
+        <div className="flex flex-col items-center justify-center py-6">
           <div className="relative h-12 w-28">
              <img src={config.logo} alt={config.name} className="h-full w-full object-contain" />
           </div>
           <span className="text-[9px] font-bold text-gray-400 tracking-[0.2em] mt-1 uppercase">Official Payment Partner</span>
         </div>
 
-        {/* Store Card */}
-        <div className="w-full bg-white rounded-lg border border-gray-100 shadow-sm p-3.5 flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-lg border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
-            <Image src="https://picsum.photos/seed/store/120" width={40} height={40} alt="store" className="object-cover" />
+        {/* Store & Amount Info Row */}
+        <div className="px-5 mb-6">
+          <div className="bg-white rounded-lg border border-gray-100 p-3 flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
+                <Image src="https://picsum.photos/seed/store/120" width={40} height={40} alt="store" className="object-cover" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="font-bold text-gray-700 text-[11px]">BD Esports Arena</h3>
+                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Invoice: <span className="text-gray-500">SSICBT940147</span></p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-sm font-black text-gray-800">৳145.00</span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <h3 className="font-bold text-gray-700 text-[11px]">BD Esports Arena</h3>
-            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Invoice: <span className="text-gray-500">SSICBT940147</span></p>
-          </div>
-        </div>
-
-        {/* Amount Bar */}
-        <div className="w-full bg-white rounded-lg border border-gray-100 shadow-sm px-4 py-3 flex items-center justify-between">
-          <span className="text-[10px] font-bold text-gray-400 uppercase">Amount to pay</span>
-          <span className="text-sm font-black text-gray-800">৳145.00</span>
         </div>
 
         {/* Instruction & Input Box */}
-        <div className="w-full rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-lg mb-4">
+        <div className="mx-5 mb-6 rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-sm">
           <h2 className="text-[12px] font-black mb-4 text-center uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           
           <div className="relative mb-5">
@@ -179,17 +176,20 @@ export default function MethodPage() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Verify Button - Flushed & Rounded Top */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
-        <div className="w-full max-w-[420px] pointer-events-auto">
+        {/* Verify Button - At the bottom of the container */}
+        <div className="px-5 pb-5">
           <Button 
-            className={`w-full h-[52px] rounded-t-xl rounded-b-none text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] ${config.boxBg} hover:brightness-105 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]`}
+            className="w-full h-[48px] rounded-lg text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-md rounded-t-xl"
           >
             VERIFY
           </Button>
         </div>
+      </div>
+      
+      {/* Policy Text */}
+      <div className="mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">
+        Secured by AntiPay Gateway
       </div>
     </div>
   );
