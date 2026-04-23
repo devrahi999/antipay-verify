@@ -1,7 +1,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
-import { collection, query, where, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,17 +12,17 @@ export async function POST(req: NextRequest) {
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key
-    const apiKeysRef = collection(db, 'api_keys');
-    const q = query(apiKeysRef, where('key', '==', apiKey), where('status', '==', 'active'));
+    // 1. Validate API Key in 'stores' collection
+    const storesRef = collection(db, 'stores');
+    const q = query(storesRef, where('key', '==', apiKey), where('status', '==', 'active'));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
       return NextResponse.json({ status: false, message: 'Invalid or inactive API Key' }, { status: 401 });
     }
 
-    const apiKeyDoc = querySnapshot.docs[0].data();
-    const userId = apiKeyDoc.userId;
+    const storeDoc = querySnapshot.docs[0].data();
+    const userId = storeDoc.userId;
 
     // 2. Validate Body
     const body = await req.json();

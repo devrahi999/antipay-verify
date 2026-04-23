@@ -20,17 +20,17 @@ export async function POST(req: NextRequest) {
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key - Ensure this key exists in your api_keys collection
-    const apiKeysRef = collection(db, 'api_keys');
-    const q = query(apiKeysRef, where('key', '==', apiKey), where('status', '==', 'active'));
+    // 1. Validate API Key in 'stores' collection
+    const storesRef = collection(db, 'stores');
+    const q = query(storesRef, where('key', '==', apiKey), where('status', '==', 'active'));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
       return NextResponse.json({ status: false, message: 'Invalid API Key' }, { status: 401 });
     }
 
-    const apiKeyDoc = querySnapshot.docs[0].data();
-    const userIdFromKey = apiKeyDoc.userId;
+    const storeDoc = querySnapshot.docs[0].data();
+    const userIdFromKey = storeDoc.userId;
 
     // 2. Validate Body
     const { sessionId, trxId: rawTrxId, method } = await req.json();
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       // Method check
       if (trxData.source?.toLowerCase() !== method?.toLowerCase()) throw new Error('Method mismatch');
       
-      // Amount check (Flexible number handling)
+      // Amount check
       const sessionAmount = Number(sessionData.amount);
       const trxAmount = Number(trxData.amount);
       if (Math.abs(trxAmount - sessionAmount) > 0.01) {
