@@ -53,7 +53,7 @@ export default function MethodPage() {
 
   const config = METHOD_CONFIG[method as keyof typeof METHOD_CONFIG];
 
-  if (!config) return <div className="p-8 text-center">Invalid Method</div>;
+  if (!config) return <div className="p-8 text-center font-bold">Invalid Method</div>;
 
   const copyNumber = () => {
     navigator.clipboard.writeText(config.number);
@@ -67,7 +67,7 @@ export default function MethodPage() {
       className="min-h-screen flex flex-col items-center p-0 relative overflow-x-hidden pb-24"
       style={{ 
         backgroundColor: '#f8fafc',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.57 13.43-30 30-30 0 16.57-13.43 30-30 30zm0 0c0 16.57-13.43 30-30 30 0-16.57-13.43-30 30-30zm0 0c0-16.57-13.43-30-30-30 0 16.57-13.43 30 30 30zm0 0c0 16.57 13.43 30 30 30 0-16.57-13.43-30 30-30z' fill='%23000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.57 13.43-30 30-30 0 16.57-13.43 30-30 30zm0 0c0 16.57-13.43 30-30 30 0-16.57-13.43-30 30-30zm0 0c0-16.57-13.43-30-30-30 0 16.57-13.43 30 30 30zm0 0c0 16.57 13.43 30 30 30 0-16.57-13.43-30 30-30z' fill='none' stroke='%23000' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
@@ -133,20 +133,20 @@ export default function MethodPage() {
           <div className="space-y-3 text-[10px] font-black leading-relaxed">
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p>
+              <p className="font-bold">
                 {config.dial} ডায়াল করে আপনার {config.name.toUpperCase()} মোবাইল মেনুতে যান অথবা {config.name.toUpperCase()} অ্যাপে যান।
               </p>
             </div>
             
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p>"<span className="text-yellow-400 font-black">Send Money</span>" -এ ক্লিক করুন।</p>
+              <p className="font-bold">"<span className="text-yellow-400 font-black">Send Money</span>" -এ ক্লিক করুন।</p>
             </div>
 
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
               <div className="flex flex-col gap-1.5">
-                <p>প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-yellow-400 text-xs tracking-widest font-black">{config.number}</span></p>
+                <p className="font-bold">প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-yellow-400 text-xs tracking-widest font-black">{config.number}</span></p>
                 <button 
                   onClick={copyNumber} 
                   className="flex items-center w-fit gap-1 bg-black/10 hover:bg-black/20 px-1.5 py-0.5 rounded transition-colors border border-white/5"
@@ -159,22 +159,22 @@ export default function MethodPage() {
 
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p>টাকার পরিমাণঃ <span className="text-yellow-400 font-black">৳145.00</span></p>
+              <p className="font-bold">টাকার পরিমাণঃ <span className="text-yellow-400 font-black">৳145.00</span></p>
             </div>
 
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p>নিশ্চিত করতে এখন আপনার {config.name.toUpperCase()} মোবাইল মেনু পিন লিখুন।</p>
+              <p className="font-bold">নিশ্চিত করতে এখন আপনার {config.name.toUpperCase()} মোবাইল মেনু পিন লিখুন।</p>
             </div>
 
             <div className="flex items-start gap-2 pb-2.5 border-b border-white/10">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p>সবকিছু ঠিক থাকলে, আপনি {config.name.toUpperCase()} থেকে একটি নিশ্চিতকরণ বার্তা পাবেন।</p>
+              <p className="font-bold">সবকিছু ঠিক থাকলে, আপনি {config.name.toUpperCase()} থেকে একটি নিশ্চিতকরণ বার্তা পাবেন।</p>
             </div>
 
             <div className="flex items-start gap-2">
               <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-              <p>এখন উপরের বক্সে আপনার <span className="text-yellow-400 font-black">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-400 font-black">VERIFY</span> বাটনে ক্লিক করুন।</p>
+              <p className="font-bold">এখন উপরের বক্সে আপনার <span className="text-yellow-400 font-black">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-400 font-black">VERIFY</span> বাটনে ক্লিক করুন।</p>
             </div>
           </div>
         </div>
