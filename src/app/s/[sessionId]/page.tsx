@@ -23,10 +23,10 @@ export default function MethodSelect() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-start pb-8">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-start pb-8 relative overflow-x-hidden">
       {/* Background Pattern */}
       <div 
-        className="fixed inset-0 pointer-events-none opacity-[0.03]" 
+        className="fixed inset-0 pointer-events-none opacity-[0.04]" 
         style={{ 
           backgroundImage: 'url("https://www.transparenttextures.com/patterns/diamond-upholstery.png")',
         }} 
@@ -34,7 +34,7 @@ export default function MethodSelect() {
 
       <div className="w-full max-w-[420px] flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
         
-        {/* Top Bar - White Background & Reduced Radius */}
+        {/* Top Bar - Clean White & Sharp corners */}
         <div className="mx-3 mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-4 border border-gray-100">
           <Button 
             variant="ghost" 
@@ -86,7 +86,7 @@ export default function MethodSelect() {
           </Button>
         </div>
 
-        {/* Methods Grid - Reduced shadow and radius */}
+        {/* Methods Grid */}
         <div className="grid grid-cols-2 gap-3 px-4 mb-24">
           {PAYMENT_METHODS.map((method) => (
             <button
@@ -105,9 +105,9 @@ export default function MethodSelect() {
           ))}
         </div>
 
-        {/* Bottom Amount Bar - Green Theme, Flat bottom corners */}
+        {/* Bottom Amount Bar - Flushed to bottom, flat bottom corners */}
         <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
-          <div className="w-full max-w-[420px] h-[60px] bg-[#E8F5E9] rounded-t-xl flex items-center justify-center shadow-lg border-t border-green-100 pointer-events-auto">
+          <div className="w-full max-w-[420px] h-[60px] bg-[#E8F5E9] rounded-t-xl rounded-b-none flex items-center justify-center shadow-lg border-t border-green-100 pointer-events-auto">
             <span className="text-[#10853D] font-bold text-base">Pay ৳145.00</span>
           </div>
         </div>

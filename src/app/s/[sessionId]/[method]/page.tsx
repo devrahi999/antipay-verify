@@ -66,7 +66,7 @@ export default function MethodPage() {
     <div className="min-h-screen bg-white flex flex-col items-center p-0 relative overflow-x-hidden pb-24">
       {/* Background Pattern */}
       <div 
-        className="fixed inset-0 pointer-events-none opacity-[0.03]" 
+        className="fixed inset-0 pointer-events-none opacity-[0.04]" 
         style={{ 
           backgroundImage: 'url("https://www.transparenttextures.com/patterns/diamond-upholstery.png")',
         }} 
@@ -74,7 +74,7 @@ export default function MethodPage() {
 
       <div className="w-full max-w-[420px] flex flex-col gap-4 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
         
-        {/* Top Bar - White Background & Reduced Radius */}
+        {/* Top Bar - Clean White & Sharp corners */}
         <div className="mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-4 border border-gray-100">
           <Button 
             variant="ghost" 
@@ -99,27 +99,27 @@ export default function MethodPage() {
           <div className="relative h-12 w-28">
              <img src={config.logo} alt={config.name} className="h-full w-full object-contain" />
           </div>
-          <span className="text-[9px] font-black text-pink-600 tracking-[0.2em] mt-1">PERSONAL</span>
+          <span className="text-[9px] font-black text-pink-600 tracking-[0.2em] mt-1 uppercase">Personal</span>
         </div>
 
-        {/* Store Card - Reduced shadow/radius */}
+        {/* Store Card */}
         <div className="w-full bg-white rounded-lg border border-gray-100 shadow-sm p-4 flex items-center gap-4">
           <div className="w-12 h-12 rounded-md border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
             <Image src="https://picsum.photos/seed/store/120" width={48} height={48} alt="store" className="object-cover" />
           </div>
           <div className="flex flex-col">
             <h3 className="font-bold text-gray-700 text-sm">BD Esports Arena</h3>
-            <p className="text-[10px] text-gray-400 font-bold">ইনভয়েস আইডিঃ <span className="text-gray-500 uppercase">SSICBT940147</span></p>
+            <p className="text-[10px] text-gray-400 font-bold uppercase">ইনভয়েস আইডিঃ <span className="text-gray-500">SSICBT940147</span></p>
           </div>
         </div>
 
-        {/* Amount Bar - Reduced shadow/radius */}
+        {/* Amount Bar */}
         <div className="w-full bg-white rounded-lg border border-gray-100 shadow-sm px-5 py-3.5 flex items-center">
           <span className="text-lg font-bold text-[#5F6E8C]">৳145.00</span>
         </div>
 
-        {/* Instruction & Input Box - Rounded-lg and Bold Text */}
-        <div className={`w-full rounded-lg p-5 ${config.boxBg} text-white shadow-md mb-4`}>
+        {/* Instruction & Input Box - Rounded corners and Bold Text */}
+        <div className={`w-full rounded-xl p-5 ${config.boxBg} text-white shadow-md mb-4`}>
           <h2 className="text-sm font-bold mb-4 text-center">ট্রানজেকশন আইডি দিন</h2>
           
           <div className="relative mb-6">
@@ -181,7 +181,7 @@ export default function MethodPage() {
         </div>
       </div>
 
-      {/* Verify Button - Large Rounded Bottom */}
+      {/* Verify Button - Flushed to bottom, flat bottom corners */}
       <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
         <div className="w-full max-w-[420px] pointer-events-auto">
           <Button 
