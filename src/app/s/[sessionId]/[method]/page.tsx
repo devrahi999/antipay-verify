@@ -67,7 +67,7 @@ export default function MethodPage() {
       className="min-h-screen flex flex-col items-center p-0 relative overflow-x-hidden pb-24"
       style={{ 
         backgroundColor: '#f8fafc',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.57 13.43-30 30-30 0 16.57-13.43 30-30 30zm0 0c0 16.57-13.43 30-30 30 0-16.57-13.43-30 30-30zm0 0c0-16.57-13.43-30-30-30 0 16.57-13.43 30 30 30zm0 0c0 16.57 13.43 30 30 30 0-16.57-13.43-30 30-30z' fill='none' stroke='%23000' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.57 13.43-30 30-30 0 16.57-13.43 30-30 30zm0 0c0 16.57-13.43 30-30 30 0-16.57-13.43-30 30-30zm0 0c0-16.57-13.43-30-30-30 0 16.57-13.43 30 30 30zm0 0c0 16.57-13.43 30 30 30 0-16.57-13.43-30 30-30z' fill='none' stroke='%23000' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
