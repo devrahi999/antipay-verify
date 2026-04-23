@@ -3,11 +3,21 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Info, HelpCircle, X, Home, PhoneCall, MessageCircle, Mail, User } from "lucide-react";
+import { Info, HelpCircle, X, Home, PhoneCall, MessageCircle, Mail, User, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useFirestore } from "@/firebase";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const DEFAULT_LOGOS: Record<string, string> = {
   bkash: "https://i.imgur.com/GeOlI04.png",
@@ -26,6 +36,7 @@ export default function MethodSelect() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [showCancelAlert, setShowCancelAlert] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -113,7 +124,7 @@ export default function MethodSelect() {
       <div className="w-full sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0">
         <div className="mx-5 sm:mx-0 mt-4 sm:mt-0 h-10 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
           <Button variant="ghost" size="icon" className="w-8 h-8 hover:bg-gray-50 text-gray-700" onClick={handleHome}><Home className="w-6 h-6" /></Button>
-          <Button variant="ghost" size="icon" disabled={isCancelling} className="w-8 h-8 hover:bg-gray-50 text-gray-700" onClick={handleCancel}><X className="w-7 h-7" /></Button>
+          <Button variant="ghost" size="icon" disabled={isCancelling} className="w-8 h-8 hover:bg-gray-50 text-gray-700" onClick={() => setShowCancelAlert(true)}><X className="w-7 h-7" /></Button>
         </div>
         <div className="flex flex-col items-center py-6 px-6">
           <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white shadow-sm mb-3 bg-gray-50 flex items-center justify-center">
@@ -154,7 +165,7 @@ export default function MethodSelect() {
             <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
               {store?.supportPhone && <a href={`tel:${store.supportPhone}`} className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><PhoneCall className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">কল করুন</p></a>}
               {store?.whatsappNumber && <a href={`https://wa.me/${store.whatsappNumber.replace(/\+/g, '')}`} target="_blank" className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><MessageCircle className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">হোয়াটসঅ্যাপ</p></a>}
-              {store?.supportEmail && <a href={`mailto:${store.supportEmail}`} className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><Mail className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">ইমেইল করুন</p></a>}
+              {store?.supportEmail && <a href={`mailto:${store.supportEmail}`} className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><Mail className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">イমেইল করুন</p></a>}
             </div>
           )}
         </div>
@@ -165,6 +176,25 @@ export default function MethodSelect() {
         </div>
       </div>
       <div className="hidden sm:block mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">Secured by AntiPay Gateway</div>
+
+      {/* Cancel Confirmation Dialog */}
+      <AlertDialog open={showCancelAlert} onOpenChange={setShowCancelAlert}>
+        <AlertDialogContent className="max-w-[320px] rounded-2xl border-0 p-6">
+          <AlertDialogHeader className="items-center text-center">
+            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-2">
+              <AlertCircle className="w-7 h-7" />
+            </div>
+            <AlertDialogTitle className="text-lg font-black text-gray-800">নিশ্চিত তো?</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-500 font-bold text-xs">
+              আপনি কি পেমেন্টটি বাতিল করতে চান?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row gap-3 mt-4">
+            <AlertDialogCancel className="flex-1 mt-0 h-10 border-gray-100 text-gray-400 font-bold text-xs rounded-xl uppercase tracking-wider">না</AlertDialogCancel>
+            <AlertDialogAction onClick={handleCancel} className="flex-1 h-10 bg-red-500 hover:bg-red-600 text-white font-bold text-xs rounded-xl uppercase tracking-wider">হ্যাঁ, বাতিল</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -3,19 +3,29 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, X, Copy, Check, User } from "lucide-react";
+import { ChevronLeft, X, Copy, Check, User, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore } from "@/firebase";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const METHOD_STATIC_CONFIG: Record<string, { name: string, logo: string, color: string, dial: string }> = {
-  bkash: { name: "bKash", logo: "https://i.imgur.com/GeOlI04.png", color: "#E2136E", dial: "*247#" },
-  nagad: { name: "Nagad", logo: "https://i.imgur.com/RZBbEjb.png", color: "#D12026", dial: "*167#" },
-  rocket: { name: "Rocket", logo: "https://i.imgur.com/wolCFJc.png", color: "#8C3494", dial: "*322#" },
-  upay: { name: "Upay", logo: "https://i.imgur.com/iqgxYRk.png", color: "#FFD400", dial: "*268#" },
+  bkash: { name: "BKASH", logo: "https://i.imgur.com/GeOlI04.png", color: "#E2136E", dial: "*247#" },
+  nagad: { name: "NAGAD", logo: "https://i.imgur.com/RZBbEjb.png", color: "#D12026", dial: "*167#" },
+  rocket: { name: "ROCKET", logo: "https://i.imgur.com/wolCFJc.png", color: "#8C3494", dial: "*322#" },
+  upay: { name: "UPAY", logo: "https://i.imgur.com/iqgxYRk.png", color: "#FFD400", dial: "*268#" },
 };
 
 export default function MethodPage() {
@@ -27,6 +37,7 @@ export default function MethodPage() {
   const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [showCancelAlert, setShowCancelAlert] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [store, setStore] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -103,22 +114,28 @@ export default function MethodPage() {
   const copyNumber = () => {
     navigator.clipboard.writeText(config.number);
     setCopied(true);
-    toast({ variant: "success", title: "Copied!", description: "Number copied to clipboard." });
+    toast({ variant: "success", title: "সফল!", description: "নম্বর কপি করা হয়েছে।" });
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start sm:justify-center p-0 sm:p-4 relative overflow-x-hidden" style={{ backgroundColor: '#eef2f6' }}>
       <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 min-h-screen sm:min-h-0 pb-24 sm:pb-0">
-        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-9 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
+        
+        {/* Top Header */}
+        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-10 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
           <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => router.back()}><ChevronLeft className="w-6 h-6" /></Button>
-          <Button variant="ghost" size="icon" disabled={isCancelling} className="w-7 h-7" onClick={handleCancel}><X className="w-6 h-6" /></Button>
+          <Button variant="ghost" size="icon" disabled={isCancelling} className="w-7 h-7" onClick={() => setShowCancelAlert(true)}><X className="w-6 h-6" /></Button>
         </div>
-        <div className="flex flex-col items-center justify-center py-6">
+
+        {/* Method Logo */}
+        <div className="flex flex-col items-center justify-center py-5">
           <div className="relative h-12 w-32"><img src={config.logo} alt={config.name} className="h-full w-full object-contain" /></div>
           <span className="text-[9px] font-bold text-gray-400 tracking-[0.2em] mt-1 uppercase">Official Payment Partner</span>
         </div>
-        <div className="px-5 mb-6">
+
+        {/* Merchant Card */}
+        <div className="px-5 mb-5">
           <div className="bg-white rounded-lg border border-gray-100 p-3 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 relative shrink-0">
@@ -132,21 +149,102 @@ export default function MethodPage() {
             <div className="text-right"><span className="text-sm font-black text-gray-800">৳{Number(session?.amount).toFixed(2)}</span></div>
           </div>
         </div>
-        <div className="mx-5 mb-6 rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-sm border border-black/5">
-          <h2 className="text-[12px] font-black mb-4 text-center uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
-          <Input value={trxId} onChange={(e) => setTrxId(e.target.value)} placeholder="ট্রানজেকশন আইডি দিন" className="bg-white border-transparent text-gray-900 h-10 rounded-lg text-center text-xs font-bold focus-visible:ring-0 mb-4" />
-          <div className="space-y-3 text-[10px] leading-relaxed">
-            <p className="font-bold">১. {config.dial} ডায়াল করে অথবা {config.name} অ্যাপ থেকে "<span className="underline">Send Money</span>" করুন।</p>
-            <p className="font-bold">২. নম্বরঃ <span className="text-black text-xs bg-white/50 px-1 rounded">{config.number}</span> <button onClick={copyNumber} className="text-[9px] font-black uppercase ml-1 underline">Copy</button></p>
-            <p className="font-bold">৩. পরিমাণঃ <span className="text-black">৳{Number(session?.amount).toFixed(2)}</span></p>
-            <p className="font-bold">৪. এখন পেমেন্ট শেষে পাওয়া ট্রানজেকশন আইডি উপরে দিয়ে VERIFY করুন।</p>
+
+        {/* Instructions Container */}
+        <div className="mx-5 mb-6 rounded-xl overflow-hidden shadow-md border border-black/5 flex flex-col" style={{ backgroundColor: config.color }}>
+          <div className="bg-white/10 py-3 text-center border-b border-white/10">
+            <h2 className="text-white text-[13px] font-black uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
+          </div>
+          
+          <div className="p-5 flex flex-col gap-4">
+            <Input 
+              value={trxId} 
+              onChange={(e) => setTrxId(e.target.value)} 
+              placeholder="ট্রানজেকশন আইডি দিন" 
+              className="bg-white border-transparent text-gray-900 h-11 rounded-lg text-center text-sm font-bold focus-visible:ring-0 shadow-inner" 
+            />
+
+            <ul className="space-y-4 text-[11px] text-white font-medium leading-snug list-none p-0">
+              <li className="flex gap-2">
+                <span className="shrink-0">•</span>
+                <span>{config.dial} ডায়াল করে আপনার <span className="font-black">{config.name}</span> মোবাইল মেনুতে যান অথবা <span className="font-black">{config.name}</span> অ্যাপে যান।</span>
+              </li>
+              <div className="h-[1px] bg-white/20 w-full"></div>
+              
+              <li className="flex gap-2">
+                <span className="shrink-0">•</span>
+                <span>"<span className="text-yellow-300 font-black"> Send Money </span>" -এ ক্লিক করুন।</span>
+              </li>
+              <div className="h-[1px] bg-white/20 w-full"></div>
+
+              <li className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <span className="shrink-0">•</span>
+                  <span>প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-yellow-300 font-black text-xs">{config.number}</span></span>
+                </div>
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={copyNumber}
+                  className="w-20 h-7 bg-black/30 hover:bg-black/40 text-white text-[9px] font-black uppercase border-0 rounded-md gap-1.5 ml-4"
+                >
+                  <Copy className="w-3 h-3" /> Copy
+                </Button>
+              </li>
+              <div className="h-[1px] bg-white/20 w-full"></div>
+
+              <li className="flex gap-2">
+                <span className="shrink-0">•</span>
+                <span>টাকার পরিমাণঃ <span className="text-yellow-300 font-black text-xs">৳{Number(session?.amount).toFixed(2)}</span></span>
+              </li>
+              <div className="h-[1px] bg-white/20 w-full"></div>
+
+              <li className="flex gap-2">
+                <span className="shrink-0">•</span>
+                <span>নিশ্চিত করতে এখন আপনার <span className="font-black">{config.name}</span> মোবাইল মেনু পিন লিখুন।</span>
+              </li>
+              <div className="h-[1px] bg-white/20 w-full"></div>
+
+              <li className="flex gap-2">
+                <span className="shrink-0">•</span>
+                <span>সবকিছু ঠিক থাকলে, আপনি <span className="font-black">{config.name}</span> থেকে একটি নিশ্চিতকরণ বার্তা পাবেন।</span>
+              </li>
+              <div className="h-[1px] bg-white/20 w-full"></div>
+
+              <li className="flex gap-2">
+                <span className="shrink-0">•</span>
+                <span>এখন উপরের বক্সে আপনার <span className="text-yellow-300 font-black">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-300 font-black">VERIFY</span> বাটনে ক্লিক করুন।</span>
+              </li>
+            </ul>
           </div>
         </div>
+
+        {/* Footer Verify Button */}
         <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white sm:bg-transparent px-0 sm:px-5 pb-0 sm:pb-5">
-          <Button disabled={isVerifying} onClick={handleVerify} className="w-full h-10 sm:h-9 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-xs tracking-[0.25em] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0">{isVerifying ? "VERIFYING..." : "VERIFY"}</Button>
+          <Button disabled={isVerifying} onClick={handleVerify} className="w-full h-12 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.2em] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0">{isVerifying ? "VERIFYING..." : "VERIFY"}</Button>
         </div>
       </div>
+
       <div className="hidden sm:block mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">Secured by AntiPay Gateway</div>
+
+      {/* Cancel Confirmation Dialog */}
+      <AlertDialog open={showCancelAlert} onOpenChange={setShowCancelAlert}>
+        <AlertDialogContent className="max-w-[320px] rounded-2xl border-0 p-6">
+          <AlertDialogHeader className="items-center text-center">
+            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-2">
+              <AlertCircle className="w-7 h-7" />
+            </div>
+            <AlertDialogTitle className="text-lg font-black text-gray-800">নিশ্চিত তো?</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-500 font-bold text-xs">
+              আপনি কি পেমেন্টটি বাতিল করতে চান?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row gap-3 mt-4">
+            <AlertDialogCancel className="flex-1 mt-0 h-10 border-gray-100 text-gray-400 font-bold text-xs rounded-xl uppercase tracking-wider">না</AlertDialogCancel>
+            <AlertDialogAction onClick={handleCancel} className="flex-1 h-10 bg-red-500 hover:bg-red-600 text-white font-bold text-xs rounded-xl uppercase tracking-wider">হ্যাঁ, বাতিল</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
