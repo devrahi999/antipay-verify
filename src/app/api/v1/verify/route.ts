@@ -8,21 +8,22 @@ function parseDate(val: any): Date {
   if (!val) return new Date(0);
   if (val instanceof Timestamp) return val.toDate();
   if (typeof val.toDate === 'function') return val.toDate();
-  return new Date(val);
+  if (typeof val === 'string') return new Date(val);
+  return new Date(0);
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = req.headers.get('x-api-key');
-    if (!apiKey) {
+    const apiKeyFromHeader = req.headers.get('x-api-key');
+    if (!apiKeyFromHeader) {
       return NextResponse.json({ status: false, message: 'Missing API Key' }, { status: 401 });
     }
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key in 'stores' collection
+    // 1. Validate API Key in 'stores' collection (Field is 'apiKey')
     const storesRef = collection(db, 'stores');
-    const q = query(storesRef, where('key', '==', apiKey), where('status', '==', 'active'));
+    const q = query(storesRef, where('apiKey', '==', apiKeyFromHeader), where('status', '==', 'active'));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     }
 
     const storeDoc = querySnapshot.docs[0].data();
-    const userIdFromKey = storeDoc.userId;
+    const userIdFromStore = storeDoc.userId;
 
     // 2. Validate Body
     const { sessionId, trxId: rawTrxId, method } = await req.json();
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
       if (new Date() > expiresAt) throw new Error('Session expired');
       
       // Ensure the session belongs to the user associated with the API Key
-      if (sessionData.userId !== userIdFromKey) throw new Error('User mismatch');
+      if (sessionData.userId !== userIdFromStore) throw new Error('User mismatch');
 
       // Transaction checks
       if (!trxSnap.exists()) throw new Error('Transaction not found');
@@ -78,7 +79,7 @@ export async function POST(req: NextRequest) {
       }
       
       // Transaction must belong to the same merchant user
-      if (trxData.userId !== userIdFromKey) throw new Error('Transaction user mismatch');
+      if (trxData.userId !== userIdFromStore) throw new Error('Transaction user mismatch');
 
       // Execute updates
       transaction.update(trxRef, { status: 'used' });

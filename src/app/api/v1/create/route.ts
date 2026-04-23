@@ -12,9 +12,9 @@ export async function POST(req: NextRequest) {
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key in 'stores' collection
+    // 1. Validate API Key in 'stores' collection (Field is 'apiKey')
     const storesRef = collection(db, 'stores');
-    const q = query(storesRef, where('key', '==', apiKey), where('status', '==', 'active'));
+    const q = query(storesRef, where('apiKey', '==', apiKey), where('status', '==', 'active'));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
