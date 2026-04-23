@@ -25,7 +25,7 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-[22px] p-4 pr-8 shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition-all duration-350 ease-out backdrop-blur-[20px] border border-white/15 hover:scale-[1.02] active:scale-[0.98] data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-4 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-[22px] p-4 pr-8 shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition-all backdrop-blur-[20px] border border-white/15 hover:scale-[1.02] active:scale-[0.98] data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-12 data-[state=open]:slide-in-from-top-20 data-[state=closed]:zoom-out-50 data-[state=open]:zoom-in-50 data-[state=open]:duration-500 data-[state=closed]:duration-300 data-[state=open]:ease-[cubic-bezier(0.175,0.885,0.32,1.275)]",
   {
     variants: {
       variant: {
