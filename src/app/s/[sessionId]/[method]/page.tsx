@@ -63,7 +63,7 @@ export default function MethodPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EBF7E6] flex flex-col items-center p-0 relative overflow-x-hidden pb-24">
+    <div className="min-h-screen bg-white flex flex-col items-center p-0 relative overflow-x-hidden pb-24">
       {/* Background Pattern */}
       <div 
         className="fixed inset-0 pointer-events-none opacity-[0.03]" 
@@ -75,7 +75,7 @@ export default function MethodPage() {
       <div className="w-full max-w-[420px] flex flex-col gap-4 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
         
         {/* Top Bar - White Background & Reduced Radius */}
-        <div className="mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-4">
+        <div className="mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-4 border border-gray-100">
           <Button 
             variant="ghost" 
             size="icon" 

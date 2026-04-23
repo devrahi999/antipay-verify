@@ -23,7 +23,7 @@ export default function MethodSelect() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EBF7E6] flex flex-col items-center justify-start pb-8">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-start pb-8">
       {/* Background Pattern */}
       <div 
         className="fixed inset-0 pointer-events-none opacity-[0.03]" 
@@ -35,11 +35,12 @@ export default function MethodSelect() {
       <div className="w-full max-w-[420px] flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
         
         {/* Top Bar - White Background & Reduced Radius */}
-        <div className="mx-3 mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-4">
+        <div className="mx-3 mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-4 border border-gray-100">
           <Button 
             variant="ghost" 
             size="icon" 
             className="w-10 h-10 hover:bg-black/5 text-gray-400"
+            onClick={() => router.push('/')}
           >
             <Home className="w-5 h-5" />
           </Button>
@@ -80,7 +81,7 @@ export default function MethodSelect() {
 
         {/* Category Tab */}
         <div className="px-4 mb-4">
-          <Button className="w-full bg-[#0052CC] hover:bg-[#0041a3] text-white font-bold h-11 rounded-md shadow-sm tracking-wide">
+          <Button className="w-full bg-[#10853D] hover:bg-[#0d6e32] text-white font-bold h-11 rounded-md shadow-sm tracking-wide">
             মোবাইল ব্যাংকিং
           </Button>
         </div>
@@ -91,7 +92,7 @@ export default function MethodSelect() {
             <button
               key={method.id}
               onClick={() => handleSelect(method.id)}
-              className="group flex items-center justify-center p-4 h-24 bg-white border border-gray-100 rounded-md shadow-sm hover:border-blue-200 transition-all active:scale-95"
+              className="group flex items-center justify-center p-4 h-24 bg-white border border-gray-100 rounded-md shadow-sm hover:border-green-200 transition-all active:scale-95"
             >
               <div className="relative w-full h-full flex items-center justify-center">
                 <img 
@@ -104,10 +105,10 @@ export default function MethodSelect() {
           ))}
         </div>
 
-        {/* Bottom Amount Bar - Reduced shadow and radius */}
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 px-4 pb-4">
-          <div className="w-full max-w-[420px] h-[60px] bg-[#E1F0FF] rounded-md flex items-center justify-center shadow-sm border border-blue-50/50">
-            <span className="text-[#0052CC] font-bold text-base">Pay ৳145.00</span>
+        {/* Bottom Amount Bar - Green Theme */}
+        <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 px-4 pb-4 pointer-events-none">
+          <div className="w-full max-w-[420px] h-[60px] bg-[#E8F5E9] rounded-md flex items-center justify-center shadow-sm border border-green-100 pointer-events-auto">
+            <span className="text-[#10853D] font-bold text-base">Pay ৳145.00</span>
           </div>
         </div>
       </div>
