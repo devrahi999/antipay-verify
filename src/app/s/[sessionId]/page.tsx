@@ -105,9 +105,9 @@ export default function MethodSelect() {
           ))}
         </div>
 
-        {/* Bottom Amount Bar - Green Theme */}
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 px-4 pb-4 pointer-events-none">
-          <div className="w-full max-w-[420px] h-[60px] bg-[#E8F5E9] rounded-md flex items-center justify-center shadow-sm border border-green-100 pointer-events-auto">
+        {/* Bottom Amount Bar - Green Theme, Flat bottom corners */}
+        <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
+          <div className="w-full max-w-[420px] h-[60px] bg-[#E8F5E9] rounded-t-xl flex items-center justify-center shadow-lg border-t border-green-100 pointer-events-auto">
             <span className="text-[#10853D] font-bold text-base">Pay ৳145.00</span>
           </div>
         </div>
