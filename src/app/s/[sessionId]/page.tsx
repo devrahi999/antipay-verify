@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Info, HelpCircle, X, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,39 +16,47 @@ const PAYMENT_METHODS = [
 export default function MethodSelect() {
   const { sessionId } = useParams();
   const router = useRouter();
+  const [view, setView] = useState<"methods" | "details">("methods");
 
   const handleSelect = (method: string) => {
     router.push(`/s/${sessionId}/${method}`);
   };
 
+  const bgPattern = {
+    backgroundColor: '#eef2f6',
+    backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
+    backgroundRepeat: 'repeat',
+  };
+
   return (
     <div 
       className="min-h-screen flex flex-col items-center justify-start sm:justify-center pb-8 relative overflow-x-hidden"
-      style={{ 
-        backgroundColor: '#eef2f6',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-      }}
+      style={bgPattern}
     >
-      <div className="w-full sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden">
+      <div className="w-full sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0">
         
-        {/* Top Bar - Solid with border for mobile, integrated for desktop */}
+        {/* Top Nav Bar */}
         <div className="mx-5 sm:mx-0 mt-4 sm:mt-0 h-10 bg-white rounded-lg sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-9 h-9 hover:bg-gray-50 text-gray-700"
+            className="w-8 h-8 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push('/')}
           >
-            <Home className="w-6 h-6" />
+            <Home className="w-5 h-5" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="w-9 h-9 hover:bg-gray-50 text-gray-700"
-          >
-            <X className="w-6 h-6" />
-          </Button>
+          <div className="flex items-center gap-1.5">
+             <button className="text-gray-400 hover:text-gray-600 p-1">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 8 6 6 6-6"/><path d="m4 14 8 8 8-8"/></svg>
+             </button>
+             <Button 
+              variant="ghost" 
+              size="icon" 
+              className="w-8 h-8 hover:bg-gray-50 text-gray-700"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Store Info Section */}
@@ -68,42 +76,78 @@ export default function MethodSelect() {
             <Button variant="outline" size="sm" className="h-8 rounded-md border-gray-100 bg-white text-gray-500 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3">
               <HelpCircle className="w-3.5 h-3.5" /> সাপোর্ট
             </Button>
-            <Button variant="outline" size="sm" className="h-8 rounded-md border-gray-100 bg-white text-gray-500 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'details' ? 'bg-[#10853D] text-white' : 'bg-white text-gray-500'}`}
+              onClick={() => setView('details')}
+            >
               <Info className="w-3.5 h-3.5" /> বিস্তারিত
             </Button>
           </div>
         </div>
 
-        {/* Category Tab - Green Bar */}
+        {/* Mobile Banking Bar */}
         <div className="px-4 mb-4">
-          <div className="w-full bg-[#10853D] text-white font-bold h-10 flex items-center justify-center rounded-md shadow-sm tracking-widest text-[10px] uppercase">
+          <button 
+            onClick={() => setView('methods')}
+            className={`w-full font-bold h-10 flex items-center justify-center rounded-md shadow-sm tracking-widest text-[10px] uppercase transition-colors ${view === 'methods' ? 'bg-[#10853D] text-white' : 'bg-gray-100 text-gray-500'}`}
+          >
             মোবাইল ব্যাংকিং
-          </div>
+          </button>
         </div>
 
-        {/* Methods Grid */}
-        <div className="grid grid-cols-2 gap-3 px-4 mb-24 sm:mb-6">
-          {PAYMENT_METHODS.map((method) => (
-            <button
-              key={method.id}
-              onClick={() => handleSelect(method.id)}
-              className="group flex items-center justify-center p-3 h-16 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-green-400 transition-all active:scale-95"
-            >
-              <div className="relative w-full h-full flex items-center justify-center">
-                <img 
-                  src={method.logo} 
-                  alt={method.name}
-                  className="max-h-8 max-w-full object-contain"
-                />
+        {/* Conditional Content */}
+        <div className="px-4 mb-24 sm:mb-6">
+          {view === 'methods' ? (
+            <div className="grid grid-cols-2 gap-3">
+              {PAYMENT_METHODS.map((method) => (
+                <button
+                  key={method.id}
+                  onClick={() => handleSelect(method.id)}
+                  className="group flex items-center justify-center p-3 h-16 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-green-400 transition-all active:scale-95"
+                >
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <img 
+                      src={method.logo} 
+                      alt={method.name}
+                      className="max-h-8 max-w-full object-contain"
+                    />
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="bg-blue-50/50 py-3 text-center border-b border-blue-50">
+                <h3 className="text-[#1D4ED8] font-bold text-xs">বিস্তারিত</h3>
               </div>
-            </button>
-          ))}
+              <div className="p-5 space-y-4">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="text-gray-400 font-bold">ইনভয়েসঃ</span>
+                  <span className="text-gray-600 font-bold">IHN TOPUP</span>
+                </div>
+                <div className="flex justify-between items-start text-[10px]">
+                  <span className="text-gray-400 font-bold">ডোমেইনঃ</span>
+                  <span className="text-gray-600 font-bold text-right max-w-[150px]">bd-esports-arena.onrender.com</span>
+                </div>
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="text-gray-400 font-bold">পরিমাণঃ</span>
+                  <span className="text-gray-600 font-bold">৳145.00</span>
+                </div>
+                <div className="pt-2 border-t border-dashed border-gray-100 flex justify-between items-center">
+                  <span className="text-gray-500 font-bold text-[10px]">মোট প্রদেয় পরিমাণঃ</span>
+                  <span className="text-[#1D4ED8] font-black text-xs">৳145.00</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Bottom Amount Bar - Fixed at bottom for mobile, integrated for desktop */}
+        {/* Bottom Amount Bar */}
         <div className="fixed sm:static bottom-0 left-0 right-0 flex justify-center z-50">
-          <div className="w-full sm:max-w-none h-16 sm:h-12 bg-[#F0FDF4] flex items-center justify-center border-t border-green-100 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] sm:shadow-none rounded-t-xl sm:rounded-none">
-            <span className="text-[#10853D] font-black text-xs uppercase tracking-[0.2em]">Pay ৳145.00</span>
+          <div className="w-full sm:max-w-none h-14 sm:h-12 bg-[#F0FDF4] flex items-center justify-center border-t border-green-100 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] sm:shadow-none rounded-t-xl sm:rounded-none">
+            <span className="text-[#10853D] font-black text-[11px] uppercase tracking-[0.2em]">Pay ৳145.00</span>
           </div>
         </div>
       </div>
