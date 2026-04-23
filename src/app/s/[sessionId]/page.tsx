@@ -8,12 +8,13 @@ import Image from "next/image";
 import { useFirestore } from "@/firebase";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
-const PAYMENT_METHODS = [
-  { id: "bkash", name: "bKash", logo: "https://i.imgur.com/GeOlI04.png" },
-  { id: "nagad", name: "Nagad", logo: "https://i.imgur.com/RZBbEjb.png" },
-  { id: "rocket", name: "Rocket", logo: "https://i.imgur.com/wolCFJc.png" },
-  { id: "upay", name: "Upay", logo: "https://i.imgur.com/iqgxYRk.png" },
-];
+// Fallback logos for standard methods if DB doesn't provide one
+const DEFAULT_LOGOS: Record<string, string> = {
+  bkash: "https://i.imgur.com/GeOlI04.png",
+  nagad: "https://i.imgur.com/RZBbEjb.png",
+  rocket: "https://i.imgur.com/wolCFJc.png",
+  upay: "https://i.imgur.com/iqgxYRk.png",
+};
 
 export default function MethodSelect() {
   const { sessionId } = useParams();
@@ -40,7 +41,6 @@ export default function MethodSelect() {
           }
           setSession(sessionData);
 
-          // Fetch Store Data from 'stores' collection
           const storesRef = collection(db, "stores");
           const q = query(storesRef, where("apiKey", "==", sessionData.apiKey));
           const querySnapshot = await getDocs(q);
@@ -61,8 +61,8 @@ export default function MethodSelect() {
     fetchData();
   }, [sessionId, db]);
 
-  const handleSelect = (method: string) => {
-    router.push(`/s/${sessionId}/${method}`);
+  const handleSelect = (methodId: string) => {
+    router.push(`/s/${sessionId}/${methodId}`);
   };
 
   const bgPattern = {
@@ -86,6 +86,9 @@ export default function MethodSelect() {
       </main>
     );
   }
+
+  // Filter active methods from store data
+  const activeMethods = store?.methods?.filter((m: any) => m.isActive) || [];
 
   return (
     <div 
@@ -164,21 +167,27 @@ export default function MethodSelect() {
         <div className="px-4 mb-24 sm:mb-6">
           {view === 'methods' && (
             <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              {PAYMENT_METHODS.map((method) => (
-                <button
-                  key={method.id}
-                  onClick={() => handleSelect(method.id)}
-                  className="group flex items-center justify-center p-3 h-16 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-green-400 transition-all active:scale-95"
-                >
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <img 
-                      src={method.logo} 
-                      alt={method.name}
-                      className="max-h-8 max-w-full object-contain"
-                    />
-                  </div>
-                </button>
-              ))}
+              {activeMethods.length > 0 ? (
+                activeMethods.map((method: any) => (
+                  <button
+                    key={method.id}
+                    onClick={() => handleSelect(method.id)}
+                    className="group flex items-center justify-center p-3 h-16 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-green-400 transition-all active:scale-95"
+                  >
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <img 
+                        src={method.logoUrl || DEFAULT_LOGOS[method.id.toLowerCase()] || "https://placehold.co/100x40?text=" + method.name} 
+                        alt={method.name}
+                        className="max-h-8 max-w-full object-contain"
+                      />
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <div className="col-span-2 py-8 text-center bg-white rounded-xl border border-dashed border-gray-200">
+                   <p className="text-[10px] font-bold text-gray-400 uppercase">কোন পেমেন্ট মেথড পাওয়া যায়নি</p>
+                </div>
+              )}
             </div>
           )}
 

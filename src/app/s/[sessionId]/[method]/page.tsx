@@ -10,36 +10,32 @@ import { useToast } from "@/hooks/use-toast";
 import { useFirestore } from "@/firebase";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
-const METHOD_CONFIG = {
+const METHOD_STATIC_CONFIG: Record<string, { name: string, logo: string, color: string, dial: string }> = {
   bkash: {
     name: "bKash",
     logo: "https://i.imgur.com/GeOlI04.png",
     color: "#E2136E",
     dial: "*247#",
-    number: "01336166870",
   },
   nagad: {
     name: "Nagad",
     logo: "https://i.imgur.com/RZBbEjb.png",
     color: "#D12026",
     dial: "*167#",
-    number: "01786543210",
   },
   rocket: {
     name: "Rocket",
     logo: "https://i.imgur.com/wolCFJc.png",
     color: "#8C3494",
     dial: "*322#",
-    number: "01912345678",
   },
   upay: {
     name: "Upay",
     logo: "https://i.imgur.com/iqgxYRk.png",
     color: "#FFD400",
     dial: "*268#",
-    number: "01312345678",
   },
-} as const;
+};
 
 export default function MethodPage() {
   const { sessionId, method } = useParams();
@@ -53,8 +49,6 @@ export default function MethodPage() {
   const [store, setStore] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-
-  const config = METHOD_CONFIG[method as keyof typeof METHOD_CONFIG];
 
   useEffect(() => {
     async function fetchData() {
@@ -71,13 +65,21 @@ export default function MethodPage() {
           }
           setSession(sessionData);
 
-          // Fetch Store Data from 'stores' collection
           const storesRef = collection(db, "stores");
           const q = query(storesRef, where("apiKey", "==", sessionData.apiKey));
           const querySnapshot = await getDocs(q);
           
           if (!querySnapshot.empty) {
-            setStore(querySnapshot.docs[0].data());
+            const storeData = querySnapshot.docs[0].data();
+            setStore(storeData);
+
+            // Check if requested method exists and is active for this merchant
+            const activeMethod = storeData.methods?.find((m: any) => m.id.toLowerCase() === (method as string).toLowerCase() && m.isActive);
+            if (!activeMethod) {
+              setNotFound(true);
+            }
+          } else {
+            setNotFound(true);
           }
         } else {
           setNotFound(true);
@@ -90,7 +92,7 @@ export default function MethodPage() {
       }
     }
     fetchData();
-  }, [sessionId, db]);
+  }, [sessionId, method, db]);
 
   if (loading) {
     return (
@@ -100,7 +102,23 @@ export default function MethodPage() {
     );
   }
 
-  if (notFound || !config) {
+  // Find the specific method config from merchant data and merge with static fallbacks
+  const methodDataFromDB = store?.methods?.find((m: any) => m.id.toLowerCase() === (method as string).toLowerCase());
+  const staticConfig = METHOD_STATIC_CONFIG[(method as string).toLowerCase()] || {
+    name: methodDataFromDB?.name || (method as string).toUpperCase(),
+    logo: "https://placehold.co/200x80?text=" + method,
+    color: "#666666",
+    dial: "*XXX#",
+  };
+
+  const config = {
+    ...staticConfig,
+    logo: methodDataFromDB?.logoUrl || staticConfig.logo,
+    number: methodDataFromDB?.number || "01XXXXXXXXX",
+    name: methodDataFromDB?.name || staticConfig.name,
+  };
+
+  if (notFound || !methodDataFromDB) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#F7F8F9]">
         <h1 className="text-xl font-medium text-muted-foreground">404 not found</h1>
