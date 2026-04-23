@@ -150,8 +150,8 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Instructions Container */}
-        <div className="mx-5 mb-6 rounded-xl overflow-hidden shadow-md border border-black/5 flex flex-col" style={{ backgroundColor: config.color }}>
+        {/* Instructions Container - Fixed Soft Green Background */}
+        <div className="mx-5 mb-6 rounded-xl overflow-hidden shadow-md border border-black/5 flex flex-col bg-[#10853D]">
           <div className="bg-white/10 py-3 text-center border-b border-white/10">
             <h2 className="text-white text-[13px] font-black uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           </div>
@@ -188,7 +188,7 @@ export default function MethodPage() {
                   onClick={copyNumber}
                   className="w-20 h-7 bg-black/30 hover:bg-black/40 text-white text-[9px] font-black uppercase border-0 rounded-md gap-1.5 ml-4"
                 >
-                  <Copy className="w-3 h-3" /> Copy
+                  <Check className="w-3 h-3" /> Copy
                 </Button>
               </li>
               <div className="h-[1px] bg-white/20 w-full"></div>
