@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -69,8 +68,8 @@ export default function MethodPage() {
     >
       <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0 pb-24 sm:pb-0">
         
-        {/* Top Nav Bar - Card style on mobile, integrated on desktop */}
-        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-14 sm:h-14 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
+        {/* Top Nav Bar - Compact Floating Style on mobile */}
+        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-12 sm:h-12 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
           <Button 
             variant="ghost" 
             size="icon" 
@@ -115,7 +114,7 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Instruction & Input Box - Specific Green #A7E693 */}
+        {/* Instruction & Input Box - Green #A7E693 */}
         <div className="mx-5 mb-6 rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-sm border border-black/5">
           <h2 className="text-[12px] font-black mb-4 text-center uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           
@@ -177,10 +176,10 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Verify Button - Fixed at bottom on mobile, full width */}
+        {/* Verify Button - Fixed at bottom on mobile */}
         <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white sm:bg-transparent px-0 sm:px-5 pb-0 sm:pb-5">
           <Button 
-            className="w-full h-14 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-[0_-4px_10px_rgba(0,0,0,0.05)] sm:shadow-md border-0"
+            className="w-full h-12 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-[0_-4px_10px_rgba(0,0,0,0.05)] sm:shadow-md border-0"
           >
             VERIFY
           </Button>

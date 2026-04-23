@@ -1,9 +1,8 @@
-
 "use client";
 
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Info, HelpCircle, AlertCircle, X, Home } from "lucide-react";
+import { Info, HelpCircle, X, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -34,21 +33,21 @@ export default function MethodSelect() {
       <div className="w-full sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden">
         
         {/* Top Bar - Solid with border for mobile, integrated for desktop */}
-        <div className="mx-3 sm:mx-0 mt-4 sm:mt-0 h-[56px] bg-white rounded-lg sm:rounded-none shadow-[0_4px_12px_rgba(0,0,0,0.08)] sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
+        <div className="mx-5 sm:mx-0 mt-4 sm:mt-0 h-12 bg-white rounded-lg sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-700"
+            className="w-9 h-9 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push('/')}
           >
-            <Home className="w-6 h-6" />
+            <Home className="w-5 h-5" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-700"
+            className="w-9 h-9 hover:bg-gray-50 text-gray-700"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </Button>
         </div>
 
@@ -72,15 +71,12 @@ export default function MethodSelect() {
             <Button variant="outline" size="sm" className="h-8 rounded-md border-gray-100 bg-white text-gray-500 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3">
               <Info className="w-3.5 h-3.5" /> বিস্তারিত
             </Button>
-            <Button variant="outline" size="sm" className="h-8 rounded-md border-gray-100 bg-white text-gray-500 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3">
-              <AlertCircle className="w-3.5 h-3.5" /> শর্তাবলী
-            </Button>
           </div>
         </div>
 
-        {/* Category Tab - Matches Image Style (Blue Bar) */}
+        {/* Category Tab - Green Bar */}
         <div className="px-4 mb-4">
-          <div className="w-full bg-[#0052CC] text-white font-bold h-10 flex items-center justify-center rounded-md shadow-sm tracking-widest text-[10px] uppercase">
+          <div className="w-full bg-[#10853D] text-white font-bold h-10 flex items-center justify-center rounded-md shadow-sm tracking-widest text-[10px] uppercase">
             মোবাইল ব্যাংকিং
           </div>
         </div>
@@ -91,7 +87,7 @@ export default function MethodSelect() {
             <button
               key={method.id}
               onClick={() => handleSelect(method.id)}
-              className="group flex items-center justify-center p-3 h-16 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-blue-400 transition-all active:scale-95"
+              className="group flex items-center justify-center p-3 h-16 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-green-400 transition-all active:scale-95"
             >
               <div className="relative w-full h-full flex items-center justify-center">
                 <img 
@@ -106,8 +102,8 @@ export default function MethodSelect() {
 
         {/* Bottom Amount Bar - Fixed at bottom for mobile, integrated for desktop */}
         <div className="fixed sm:static bottom-0 left-0 right-0 flex justify-center z-50">
-          <div className="w-full sm:max-w-none h-16 sm:h-12 bg-[#E3F2FD] flex items-center justify-center border-t border-blue-100 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] sm:shadow-none">
-            <span className="text-[#0052CC] font-black text-xs uppercase tracking-[0.2em]">Pay ৳145.00</span>
+          <div className="w-full sm:max-w-none h-16 sm:h-12 bg-[#F0FDF4] flex items-center justify-center border-t border-green-100 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] sm:shadow-none">
+            <span className="text-[#10853D] font-black text-xs uppercase tracking-[0.2em]">Pay ৳145.00</span>
           </div>
         </div>
       </div>
