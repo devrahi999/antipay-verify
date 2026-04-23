@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -46,6 +45,7 @@ export default function MethodPage() {
   const { toast } = useToast();
   const [trxId, setTrxId] = useState("");
   const [copied, setCopied] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const config = METHOD_CONFIG[method as keyof typeof METHOD_CONFIG];
 
@@ -56,6 +56,40 @@ export default function MethodPage() {
     setCopied(true);
     toast({ title: "Copied!", description: "Number copied to clipboard." });
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleVerify = () => {
+    if (!trxId) {
+      toast({
+        variant: "destructive",
+        title: "ভুল হয়েছে!",
+        description: "দয়া করে ট্রানজেকশন আইডি দিন।",
+      });
+      return;
+    }
+
+    setIsVerifying(true);
+    
+    // Simulate verification
+    setTimeout(() => {
+      setIsVerifying(false);
+      // Mock failure for demonstration as requested, or logic could be random
+      const isSuccess = trxId.length > 8 && Math.random() > 0.7;
+      
+      if (isSuccess) {
+        toast({
+          title: "অভিনন্দন!",
+          description: "আপনার পেমেন্টটি সফলভাবে সম্পন্ন হয়েছে।",
+        });
+        setTimeout(() => router.push('/'), 2000);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "ভুল হয়েছে!",
+          description: "দুঃখিত আপনার ট্রানজেকশন আইডি টি খুঁজে পাওয়া যায়নি, দয়া করে কিছুক্ষণ পরে আবার ট্রাই করুন।",
+        });
+      }
+    }, 1500);
   };
 
   const bgPattern = {
@@ -72,22 +106,22 @@ export default function MethodPage() {
       <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0 pb-24 sm:pb-0">
         
         {/* Top Nav Bar - Compact Floating Style on mobile */}
-        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-10 sm:h-10 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
+        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-9 sm:h-9 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-8 h-8 hover:bg-gray-50 text-gray-700"
+            className="w-7 h-7 hover:bg-gray-50 text-gray-700"
             onClick={() => router.back()}
           >
-            <ChevronLeft className="w-8 h-8" />
+            <ChevronLeft className="w-6 h-6" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-8 h-8 hover:bg-gray-50 text-gray-700"
+            className="w-7 h-7 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push('/s/cancel')}
           >
-            <X className="w-7 h-7" />
+            <X className="w-6 h-6" />
           </Button>
         </div>
 
@@ -182,9 +216,11 @@ export default function MethodPage() {
         {/* Verify Button - Fixed at bottom on mobile */}
         <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white sm:bg-transparent px-0 sm:px-5 pb-0 sm:pb-5">
           <Button 
-            className="w-full h-12 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-[0_-4px_10px_rgba(0,0,0,0.05)] sm:shadow-md border-0"
+            disabled={isVerifying}
+            onClick={handleVerify}
+            className="w-full h-10 sm:h-9 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-xs tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-[0_-4px_10px_rgba(0,0,0,0.05)] sm:shadow-md border-0"
           >
-            VERIFY
+            {isVerifying ? "VERIFYING..." : "VERIFY"}
           </Button>
         </div>
       </div>
