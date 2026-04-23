@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -26,28 +27,28 @@ export default function MethodSelect() {
       className="min-h-screen flex flex-col items-center justify-start pb-8 relative overflow-x-hidden"
       style={{ 
         backgroundColor: '#eef2f6',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.0'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
       <div className="w-full max-w-[420px] flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
         
-        {/* Top Bar - Modern White Bar */}
-        <div className="mx-3 mt-4 h-[60px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4 border border-gray-100/50">
+        {/* Top Bar - More compact height with larger icons */}
+        <div className="mx-3 mt-4 h-[50px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4 border border-gray-100/50">
           <Button 
             variant="ghost" 
             size="icon" 
             className="w-10 h-10 hover:bg-gray-50 text-gray-500"
             onClick={() => router.push('/')}
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-6 h-6" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
             className="w-10 h-10 hover:bg-gray-50 text-gray-500"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </Button>
         </div>
 

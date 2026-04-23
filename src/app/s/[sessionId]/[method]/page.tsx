@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -66,21 +67,21 @@ export default function MethodPage() {
       className="min-h-screen flex flex-col items-center p-0 relative overflow-x-hidden pb-24"
       style={{ 
         backgroundColor: '#eef2f6',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.0'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
       <div className="w-full max-w-[420px] flex flex-col gap-4 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
         
-        {/* Top Bar - Modern White Bar */}
-        <div className="mt-4 h-[60px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4 border border-gray-100/50">
+        {/* Top Bar - More compact height with larger icons */}
+        <div className="mt-4 h-[50px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4 border border-gray-100/50">
           <Button 
             variant="ghost" 
             size="icon" 
             className="w-10 h-10 hover:bg-gray-50 text-gray-500"
             onClick={() => router.back()}
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-7 h-7" />
           </Button>
           <Button 
             variant="ghost" 
@@ -88,7 +89,7 @@ export default function MethodPage() {
             className="w-10 h-10 hover:bg-gray-50 text-gray-500"
             onClick={() => router.push(`/s/${sessionId}`)}
           >
-            <X className="w-6 h-6" />
+            <X className="w-7 h-7" />
           </Button>
         </div>
 
@@ -118,7 +119,7 @@ export default function MethodPage() {
         </div>
 
         {/* Instruction & Input Box */}
-        <div className={`w-full rounded-xl p-5 ${config.boxBg} text-white shadow-lg mb-4`}>
+        <div className={`w-full rounded-lg p-5 ${config.boxBg} text-white shadow-lg mb-4`}>
           <h2 className="text-[12px] font-black mb-4 text-center uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           
           <div className="relative mb-5">
