@@ -1,11 +1,13 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Info, HelpCircle, X, Home, PhoneCall, MessageCircle, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useFirestore } from "@/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const PAYMENT_METHODS = [
   { id: "bkash", name: "bKash", logo: "https://i.imgur.com/GeOlI04.png" },
@@ -17,7 +19,21 @@ const PAYMENT_METHODS = [
 export default function MethodSelect() {
   const { sessionId } = useParams();
   const router = useRouter();
+  const db = useFirestore();
   const [view, setView] = useState<"methods" | "details" | "support">("methods");
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchSession() {
+      if (!sessionId) return;
+      const docRef = doc(db, "payment_sessions", sessionId as string);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setSession(docSnap.data());
+      }
+    }
+    fetchSession();
+  }, [sessionId, db]);
 
   const handleSelect = (method: string) => {
     router.push(`/s/${sessionId}/${method}`);
@@ -29,6 +45,8 @@ export default function MethodSelect() {
     backgroundRepeat: 'repeat',
   };
 
+  if (!session) return <div className="min-h-screen flex items-center justify-center">Loading session...</div>;
+
   return (
     <div 
       className="min-h-screen flex flex-col items-center justify-start sm:justify-center pb-0 relative overflow-x-hidden"
@@ -36,7 +54,6 @@ export default function MethodSelect() {
     >
       <div className="w-full sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0">
         
-        {/* Top Nav Bar - Compact & Rounded */}
         <div className="mx-5 sm:mx-0 mt-4 sm:mt-0 h-10 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
           <Button 
             variant="ghost" 
@@ -58,7 +75,6 @@ export default function MethodSelect() {
           </div>
         </div>
 
-        {/* Store Info Section */}
         <div className="flex flex-col items-center py-6 px-6">
           <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white shadow-sm mb-3 bg-white">
             <Image 
@@ -91,7 +107,6 @@ export default function MethodSelect() {
           </div>
         </div>
 
-        {/* Mobile Banking Bar */}
         <div className="px-4 mb-4">
           <button 
             onClick={() => setView('methods')}
@@ -101,7 +116,6 @@ export default function MethodSelect() {
           </button>
         </div>
 
-        {/* Conditional Content */}
         <div className="px-4 mb-24 sm:mb-6">
           {view === 'methods' && (
             <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -126,24 +140,24 @@ export default function MethodSelect() {
           {view === 'details' && (
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="bg-[#10853D]/5 py-3 text-center border-b border-[#10853D]/5">
-                <h3 className="text-[#10853D] font-bold text-xs uppercase tracking-widest">বিস্তারিত</h3>
+                <h3 className="text-[#10853D] font-bold text-xs uppercase tracking-widest"> বিস্তারিত</h3>
               </div>
               <div className="p-5 space-y-4">
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">ইনভয়েসঃ</span>
-                  <span className="text-gray-600 font-bold">IHN TOPUP</span>
+                  <span className="text-gray-600 font-bold">{session.sessionId?.toString().slice(0, 12).toUpperCase()}</span>
                 </div>
                 <div className="flex justify-between items-start text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">ডোমেইনঃ</span>
-                  <span className="text-gray-600 font-bold text-right max-w-[150px]">bd-esports-arena.onrender.com</span>
+                  <span className="text-gray-600 font-bold text-right max-w-[150px]">bd-esports-arena.com</span>
                 </div>
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">পরিমাণঃ</span>
-                  <span className="text-gray-600 font-bold">৳145.00</span>
+                  <span className="text-gray-600 font-bold">৳{Number(session.amount).toFixed(2)}</span>
                 </div>
                 <div className="pt-2 border-t border-dashed border-gray-100 flex justify-between items-center">
                   <span className="text-gray-500 font-bold text-[10px] uppercase">মোট প্রদেয় পরিমাণঃ</span>
-                  <span className="text-[#10853D] font-black text-xs">৳145.00</span>
+                  <span className="text-[#10853D] font-black text-xs">৳{Number(session.amount).toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -179,15 +193,13 @@ export default function MethodSelect() {
           )}
         </div>
 
-        {/* Bottom Amount Bar */}
         <div className="fixed sm:static bottom-0 left-0 right-0 flex justify-center z-50">
           <div className="w-full sm:max-w-none h-14 sm:h-12 bg-[#F0FDF4] flex items-center justify-center border-t border-green-100 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] sm:shadow-none rounded-t-xl sm:rounded-none">
-            <span className="text-[#10853D] font-black text-[11px] uppercase tracking-[0.2em]">Pay ৳145.00</span>
+            <span className="text-[#10853D] font-black text-[11px] uppercase tracking-[0.2em]">Pay ৳{Number(session.amount).toFixed(2)}</span>
           </div>
         </div>
       </div>
       
-      {/* Policy Text for Desktop */}
       <div className="hidden sm:block mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">
         Secured by AntiPay Gateway
       </div>

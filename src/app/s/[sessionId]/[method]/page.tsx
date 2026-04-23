@@ -1,12 +1,15 @@
+
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft, X, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
+import { useFirestore } from "@/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const METHOD_CONFIG = {
   bkash: {
@@ -43,13 +46,28 @@ export default function MethodPage() {
   const { sessionId, method } = useParams();
   const router = useRouter();
   const { toast } = useToast();
+  const db = useFirestore();
   const [trxId, setTrxId] = useState("");
   const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [session, setSession] = useState<any>(null);
 
   const config = METHOD_CONFIG[method as keyof typeof METHOD_CONFIG];
 
+  useEffect(() => {
+    async function fetchSession() {
+      if (!sessionId) return;
+      const docRef = doc(db, "payment_sessions", sessionId as string);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setSession(docSnap.data());
+      }
+    }
+    fetchSession();
+  }, [sessionId, db]);
+
   if (!config) return <div className="p-8 text-center font-bold">Invalid Method</div>;
+  if (!session) return <div className="p-8 text-center font-bold">Loading...</div>;
 
   const copyNumber = () => {
     navigator.clipboard.writeText(config.number);
@@ -58,7 +76,7 @@ export default function MethodPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (!trxId) {
       toast({
         variant: "destructive",
@@ -70,13 +88,24 @@ export default function MethodPage() {
 
     setIsVerifying(true);
     
-    // Simulate verification
-    setTimeout(() => {
-      setIsVerifying(false);
-      // Mock failure for demonstration as requested, or logic could be random
-      const isSuccess = trxId.length > 8 && Math.random() > 0.7;
-      
-      if (isSuccess) {
+    try {
+      // Call the real verify API
+      const response = await fetch('/api/v1/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': session.apiKey // Using the apiKey stored in session for validation
+        },
+        body: JSON.stringify({
+          sessionId,
+          trxId,
+          method
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === 'verified') {
         toast({
           title: "অভিনন্দন!",
           description: "আপনার পেমেন্টটি সফলভাবে সম্পন্ন হয়েছে।",
@@ -89,7 +118,15 @@ export default function MethodPage() {
           description: "দুঃখিত আপনার ট্রানজেকশন আইডি টি খুঁজে পাওয়া যায়নি, দয়া করে কিছুক্ষণ পরে আবার ট্রাই করুন।",
         });
       }
-    }, 1500);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "ভুল হয়েছে!",
+        description: "দুঃখিত আপনার ট্রানজেকশন আইডি টি খুঁজে পাওয়া যায়নি, দয়া করে কিছুক্ষণ পরে আবার ট্রাই করুন।",
+      });
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const bgPattern = {
@@ -105,7 +142,6 @@ export default function MethodPage() {
     >
       <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0 pb-24 sm:pb-0">
         
-        {/* Top Nav Bar - Compact Floating Style on mobile */}
         <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-9 sm:h-9 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
           <Button 
             variant="ghost" 
@@ -125,7 +161,6 @@ export default function MethodPage() {
           </Button>
         </div>
 
-        {/* Logo Section */}
         <div className="flex flex-col items-center justify-center py-6">
           <div className="relative h-12 w-32">
              <img src={config.logo} alt={config.name} className="h-full w-full object-contain" />
@@ -133,7 +168,6 @@ export default function MethodPage() {
           <span className="text-[9px] font-bold text-gray-400 tracking-[0.2em] mt-1 uppercase">Official Payment Partner</span>
         </div>
 
-        {/* Store & Amount Info Row */}
         <div className="px-5 mb-6">
           <div className="bg-white rounded-lg border border-gray-100 p-3 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
@@ -142,16 +176,15 @@ export default function MethodPage() {
               </div>
               <div className="flex flex-col">
                 <h3 className="font-bold text-gray-700 text-[11px]">BD Esports Arena</h3>
-                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Invoice: <span className="text-gray-500">SSICBT940147</span></p>
+                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Invoice: <span className="text-gray-500">{sessionId?.toString().slice(0, 12).toUpperCase()}</span></p>
               </div>
             </div>
             <div className="text-right">
-              <span className="text-sm font-black text-gray-800">৳145.00</span>
+              <span className="text-sm font-black text-gray-800">৳{Number(session.amount).toFixed(2)}</span>
             </div>
           </div>
         </div>
 
-        {/* Instruction & Input Box - Green #A7E693 */}
         <div className="mx-5 mb-6 rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-sm border border-black/5">
           <h2 className="text-[12px] font-black mb-4 text-center uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           
@@ -193,7 +226,7 @@ export default function MethodPage() {
 
             <div className="flex items-start gap-2.5">
               <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
-              <p className="font-bold">টাকার পরিমাণঃ <span className="text-black">৳145.00</span></p>
+              <p className="font-bold">টাকার পরিমাণঃ <span className="text-black">৳{Number(session.amount).toFixed(2)}</span></p>
             </div>
 
             <div className="flex items-start gap-2.5">
@@ -213,7 +246,6 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Verify Button - Fixed at bottom on mobile */}
         <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white sm:bg-transparent px-0 sm:px-5 pb-0 sm:pb-5">
           <Button 
             disabled={isVerifying}
@@ -225,7 +257,6 @@ export default function MethodPage() {
         </div>
       </div>
       
-      {/* Policy Text - Only visible on desktop or scroll */}
       <div className="hidden sm:block mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">
         Secured by AntiPay Gateway
       </div>

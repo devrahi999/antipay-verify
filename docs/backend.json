@@ -1,10 +1,57 @@
 
 {
-  "entities": {},
+  "entities": {
+    "ApiKey": {
+      "title": "API Key",
+      "description": "Merchant API keys for authentication",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string" },
+        "userId": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "storeName": { "type": "string" }
+      },
+      "required": ["key", "userId", "status"]
+    },
+    "PaymentSession": {
+      "title": "Payment Session",
+      "description": "A payment session created by a merchant",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "apiKey": { "type": "string" },
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "verified", "cancelled", "expired"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "method": { "type": "string" },
+        "trxId": { "type": "string" },
+        "val_id": { "type": "string" }
+      }
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "A raw transaction record from MFS provider",
+      "type": "object",
+      "properties": {
+        "trxId": { "type": "string" },
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "source": { "type": "string" },
+        "status": { "type": "string", "enum": ["unused", "used"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
   "auth": {
     "providers": [
       "google.com"
     ]
   },
-  "firestore": {}
+  "firestore": {
+    "api_keys/{apiKeyId}": { "schema": "ApiKey", "description": "Collection of API keys" },
+    "payment_sessions/{sessionId}": { "schema": "PaymentSession", "description": "Active payment sessions" },
+    "transactions/{trxId}": { "schema": "Transaction", "description": "MFS transaction logs" }
+  }
 }
