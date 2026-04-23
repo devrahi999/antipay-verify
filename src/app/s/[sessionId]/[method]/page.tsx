@@ -71,7 +71,7 @@ export default function MethodPage() {
           }
           setSession(sessionData);
 
-          // Fetch Store Data
+          // Fetch Store Data from 'stores' collection
           const storesRef = collection(db, "stores");
           const q = query(storesRef, where("apiKey", "==", sessionData.apiKey));
           const querySnapshot = await getDocs(q);
@@ -140,7 +140,7 @@ export default function MethodPage() {
         },
         body: JSON.stringify({
           sessionId,
-          trxId,
+          trxId: trxId.trim(),
           method
         })
       });
@@ -158,7 +158,7 @@ export default function MethodPage() {
         toast({
           variant: "destructive",
           title: "ভুল হয়েছে!",
-          description: "দুঃখিত আপনার ট্রানজেকশন আইডি টি খুঁজে পাওয়া যায়নি, দয়া করে কিছুক্ষণ পরে আবার ট্রাই করুন।",
+          description: result.message || "দুঃখিত আপনার ট্রানজেকশন আইডি টি খুঁজে পাওয়া যায়নি, দয়া করে কিছুক্ষণ পরে আবার ট্রাই করুন।",
         });
       }
     } catch (error) {
@@ -222,7 +222,7 @@ export default function MethodPage() {
                 )}
               </div>
               <div className="flex flex-col">
-                <h3 className="font-bold text-gray-700 text-[11px]">{store?.storeName || "Merchant Store"}</h3>
+                <h3 className="font-bold text-gray-700 text-[11px]">{store?.name || "Merchant Store"}</h3>
                 <p className="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Invoice: <span className="text-gray-500">{sessionId?.toString().slice(0, 12).toUpperCase()}</span></p>
               </div>
             </div>

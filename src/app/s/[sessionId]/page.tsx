@@ -40,7 +40,7 @@ export default function MethodSelect() {
           }
           setSession(sessionData);
 
-          // Fetch Store Data
+          // Fetch Store Data from 'stores' collection
           const storesRef = collection(db, "stores");
           const q = query(storesRef, where("apiKey", "==", sessionData.apiKey));
           const querySnapshot = await getDocs(q);
@@ -123,21 +123,20 @@ export default function MethodSelect() {
                 alt="Store Logo" 
                 fill 
                 className="object-cover"
-                data-ai-hint="store logo"
               />
             ) : (
               <User className="w-8 h-8 text-gray-300" />
             )}
           </div>
           <h2 className="text-xs font-black text-gray-700 mb-4 text-center uppercase tracking-wide">
-            {store?.storeName || "Merchant Store"}
+            {store?.name || "Merchant Store"}
           </h2>
           
           <div className="flex gap-2">
             <Button 
               variant="outline" 
               size="sm" 
-              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'support' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-50'}`}
+              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'support' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-500'}`}
               onClick={() => setView('support')}
             >
               <HelpCircle className="w-3.5 h-3.5" /> সাপোর্ট
@@ -145,7 +144,7 @@ export default function MethodSelect() {
             <Button 
               variant="outline" 
               size="sm" 
-              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'details' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-50'}`}
+              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'details' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-500'}`}
               onClick={() => setView('details')}
             >
               <Info className="w-3.5 h-3.5" /> বিস্তারিত
@@ -195,7 +194,7 @@ export default function MethodSelect() {
                 </div>
                 <div className="flex justify-between items-start text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">ডোমেইনঃ</span>
-                  <span className="text-gray-600 font-bold text-right max-w-[150px]">{store?.domain || "merchant-site.com"}</span>
+                  <span className="text-gray-600 font-bold text-right max-w-[150px]">{store?.websiteUrl || "merchant-site.com"}</span>
                 </div>
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">পরিমাণঃ</span>
@@ -211,40 +210,51 @@ export default function MethodSelect() {
 
           {view === 'support' && (
             <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <a 
-                href={store?.supportPhone ? `tel:${store.supportPhone}` : "#"}
-                className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
-              >
-                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
-                  <PhoneCall className="w-5 h-5" />
+              {store?.supportPhone && (
+                <a 
+                  href={`tel:${store.supportPhone}`}
+                  className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
+                >
+                  <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
+                    <PhoneCall className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্ট নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
+                  </div>
+                </a>
+              )}
+              {store?.whatsappNumber && (
+                <a 
+                  href={`https://wa.me/${store.whatsappNumber.replace(/\+/g, '')}`}
+                  target="_blank"
+                  className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
+                >
+                  <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
+                    <MessageCircle className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্ট হোয়াটসঅ্যাপ নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
+                  </div>
+                </a>
+              )}
+              {store?.supportEmail && (
+                <a 
+                  href={`mailto:${store.supportEmail}`}
+                  className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
+                >
+                  <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্ট ইমেইল করতে এখানে ক্লিক করুন।</p>
+                  </div>
+                </a>
+              )}
+              {!store?.supportPhone && !store?.whatsappNumber && !store?.supportEmail && (
+                <div className="p-8 text-center bg-white rounded-xl border border-gray-100">
+                  <p className="text-xs font-bold text-gray-400 uppercase">কোন সাপোর্ট তথ্য পাওয়া যায়নি</p>
                 </div>
-                <div className="text-left">
-                  <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
-                </div>
-              </a>
-              <a 
-                href={store?.supportWhatsapp ? `https://wa.me/${store.supportWhatsapp}` : "#"}
-                target="_blank"
-                className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
-              >
-                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
-                  <MessageCircle className="w-5 h-5" />
-                </div>
-                <div className="text-left">
-                  <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে হোয়াটসঅ্যাপ নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
-                </div>
-              </a>
-              <a 
-                href={store?.supportEmail ? `mailto:${store.supportEmail}` : "#"}
-                className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
-              >
-                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div className="text-left">
-                  <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে ইমেইল করতে এখানে ক্লিক করুন।</p>
-                </div>
-              </a>
+              )}
             </div>
           )}
         </div>
