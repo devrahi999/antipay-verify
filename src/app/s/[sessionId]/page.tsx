@@ -127,8 +127,8 @@ export default function MethodSelect() {
 
           {view === 'details' && (
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="bg-blue-50/50 py-3 text-center border-b border-blue-50">
-                <h3 className="text-[#1D4ED8] font-bold text-xs">বিস্তারিত</h3>
+              <div className="bg-green-50/50 py-3 text-center border-b border-green-50">
+                <h3 className="text-[#10853D] font-bold text-xs">বিস্তারিত</h3>
               </div>
               <div className="p-5 space-y-4">
                 <div className="flex justify-between items-center text-[10px]">
@@ -145,7 +145,7 @@ export default function MethodSelect() {
                 </div>
                 <div className="pt-2 border-t border-dashed border-gray-100 flex justify-between items-center">
                   <span className="text-gray-500 font-bold text-[10px] uppercase">মোট প্রদেয় পরিমাণঃ</span>
-                  <span className="text-[#1D4ED8] font-black text-xs">৳145.00</span>
+                  <span className="text-[#10853D] font-black text-xs">৳145.00</span>
                 </div>
               </div>
             </div>
@@ -153,8 +153,8 @@ export default function MethodSelect() {
 
           {view === 'support' && (
             <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-blue-400 transition-all active:scale-[0.98]">
-                <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
+                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500">
                   <PhoneCall className="w-5 h-5" />
                 </div>
                 <div className="text-left">
@@ -169,8 +169,8 @@ export default function MethodSelect() {
                   <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে হোয়াটসঅ্যাপ নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
                 </div>
               </button>
-              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-yellow-400 transition-all active:scale-[0.98]">
-                <div className="w-11 h-11 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-500">
+              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
+                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div className="text-left">
