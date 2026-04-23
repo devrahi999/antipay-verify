@@ -2,13 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
 import { doc, runTransaction, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 
-// Helper function to handle both Firestore Timestamps and ISO strings
 function parseDate(val: any): Date {
   if (!val) return new Date(0);
   if (val instanceof Timestamp) return val.toDate();
-  if (typeof val.toDate === 'function') return val.toDate();
   if (typeof val === 'string') return new Date(val);
   return new Date(0);
+}
+
+async function callWebhook(url: string, payload: any) {
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    console.error('Webhook failed:', e);
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -49,30 +59,22 @@ export async function POST(req: NextRequest) {
       const sessionSnap = await transaction.get(sessionRef);
       const trxSnap = await transaction.get(trxRef);
 
-      // Session checks
       if (!sessionSnap.exists()) throw new Error('Invalid session');
       const sessionData = sessionSnap.data();
       if (sessionData.isUsed === true || sessionData.status !== 'pending') throw new Error('Already used');
       
       const expiresAt = parseDate(sessionData.expiresAt);
       if (new Date() > expiresAt) throw new Error('Session expired');
-      
-      if (sessionData.userId !== userIdFromStore) throw new Error('User mismatch');
+      if (sessionData.apiKey !== apiKeyFromHeader) throw new Error('API Key mismatch');
 
-      // Transaction checks
       if (!trxSnap.exists()) throw new Error('Transaction not found');
       const trxData = trxSnap.data();
-      
       if (trxData.status !== 'unused') throw new Error('Already used');
-      if (trxData.source?.toLowerCase() !== method?.toLowerCase()) throw new Error('Method mismatch');
       
       const sessionAmount = Number(sessionData.amount);
       const trxAmount = Number(trxData.amount);
-      if (Math.abs(trxAmount - sessionAmount) > 0.01) {
-        throw new Error('Amount mismatch');
-      }
-      
-      if (trxData.userId !== userIdFromStore) throw new Error('Transaction user mismatch');
+      if (Math.abs(trxAmount - sessionAmount) > 0.01) throw new Error('Amount mismatch');
+      if (trxData.userId !== userIdFromStore) throw new Error('User mismatch');
 
       // Execute updates
       transaction.update(trxRef, { status: 'used' });
@@ -84,19 +86,23 @@ export async function POST(req: NextRequest) {
         verifiedAt: new Date().toISOString()
       });
 
-      return {
-        status: 'verified',
-        trxId: trxId,
-        amount: sessionAmount
-      };
+      // Prepare Webhook Payload
+      if (sessionData.webhook_url) {
+        callWebhook(sessionData.webhook_url, {
+          status: 'verified',
+          trxId: trxId,
+          amount: sessionAmount,
+          sessionId: sessionId,
+          val_id: sessionData.val_id
+        });
+      }
+
+      return { status: 'verified', trxId, amount: sessionAmount };
     });
 
     return NextResponse.json(result);
 
   } catch (error: any) {
-    return NextResponse.json({ 
-      status: false, 
-      message: error.message || 'Verification failed' 
-    }, { status: 400 });
+    return NextResponse.json({ status: false, message: error.message || 'Verification failed' }, { status: 400 });
   }
 }

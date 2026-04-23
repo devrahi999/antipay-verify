@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key in 'stores' collection (Field is 'apiKey')
+    // 1. Validate API Key in 'stores' collection
     const storesRef = collection(db, 'stores');
     const q = query(storesRef, where('apiKey', '==', apiKey), where('status', '==', 'active'));
     const querySnapshot = await getDocs(q);
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Generate Session
-    const sessionId = 'sess_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const sessionId = 'sess_' + Math.random().toString(36).substring(2, 15);
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
 
     const sessionData = {
@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
       method: null,
       trxId: null,
       val_id: body.val_id || null,
+      webhook_url: body.webhook_url || null,
     };
 
     await setDoc(doc(db, 'payment_sessions', sessionId), sessionData);
