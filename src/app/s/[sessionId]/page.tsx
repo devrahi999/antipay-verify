@@ -37,25 +37,23 @@ export default function MethodSelect() {
       <div className="w-full sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0">
         
         {/* Top Nav Bar - Compact & Rounded */}
-        <div className="mx-5 sm:mx-0 mt-3 sm:mt-0 h-9 bg-white rounded-lg sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
+        <div className="mx-5 sm:mx-0 mt-4 sm:mt-0 h-10 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-7 h-7 hover:bg-gray-50 text-gray-700"
+            className="w-8 h-8 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push('/')}
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-6 h-6" />
           </Button>
           <div className="flex items-center gap-1.5">
-             <button className="text-gray-400 hover:text-gray-600 p-1">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 8 6 6 6-6"/><path d="m4 14 8 8 8-8"/></svg>
-             </button>
              <Button 
               variant="ghost" 
               size="icon" 
-              className="w-7 h-7 hover:bg-gray-50 text-gray-700"
+              className="w-8 h-8 hover:bg-gray-50 text-gray-700"
+              onClick={() => router.push('/s/cancel')}
             >
-              <X className="w-5 h-5" />
+              <X className="w-7 h-7" />
             </Button>
           </div>
         </div>
@@ -127,8 +125,8 @@ export default function MethodSelect() {
 
           {view === 'details' && (
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="bg-green-50/50 py-3 text-center border-b border-green-50">
-                <h3 className="text-[#10853D] font-bold text-xs">বিস্তারিত</h3>
+              <div className="bg-[#10853D]/5 py-3 text-center border-b border-[#10853D]/5">
+                <h3 className="text-[#10853D] font-bold text-xs uppercase tracking-widest">বিস্তারিত</h3>
               </div>
               <div className="p-5 space-y-4">
                 <div className="flex justify-between items-center text-[10px]">
@@ -154,7 +152,7 @@ export default function MethodSelect() {
           {view === 'support' && (
             <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
-                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
                   <PhoneCall className="w-5 h-5" />
                 </div>
                 <div className="text-left">
@@ -162,7 +160,7 @@ export default function MethodSelect() {
                 </div>
               </button>
               <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
-                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div className="text-left">
@@ -170,7 +168,7 @@ export default function MethodSelect() {
                 </div>
               </button>
               <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
-                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div className="text-left">

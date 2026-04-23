@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -57,23 +58,25 @@ export default function MethodPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const bgPattern = {
+    backgroundColor: '#eef2f6',
+    backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
+    backgroundRepeat: 'repeat',
+  };
+
   return (
     <div 
       className="min-h-screen flex flex-col items-center justify-start sm:justify-center p-0 sm:p-4 relative overflow-x-hidden"
-      style={{ 
-        backgroundColor: '#eef2f6',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-      }}
+      style={bgPattern}
     >
       <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0 pb-24 sm:pb-0">
         
         {/* Top Nav Bar - Compact Floating Style on mobile */}
-        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-12 sm:h-12 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
+        <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-10 sm:h-10 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-700"
+            className="w-8 h-8 hover:bg-gray-50 text-gray-700"
             onClick={() => router.back()}
           >
             <ChevronLeft className="w-8 h-8" />
@@ -81,10 +84,10 @@ export default function MethodPage() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-10 h-10 hover:bg-gray-50 text-gray-700"
-            onClick={() => router.push(`/s/${sessionId}`)}
+            className="w-8 h-8 hover:bg-gray-50 text-gray-700"
+            onClick={() => router.push('/s/cancel')}
           >
-            <X className="w-8 h-8" />
+            <X className="w-7 h-7" />
           </Button>
         </div>
 
