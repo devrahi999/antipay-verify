@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -87,8 +88,18 @@ export default function MethodSelect() {
     );
   }
 
-  // Filter active methods from store data
-  const activeMethods = store?.methods?.filter((m: any) => m.isActive) || [];
+  // Filter active methods from store data using the nested map structure
+  const activeMethods = (store?.methods || [])
+    .map((m: any) => {
+      const id = Object.keys(m)[0];
+      const info = m[id];
+      return { 
+        id, 
+        ...info, 
+        name: info.name || id.charAt(0).toUpperCase() + id.slice(1) 
+      };
+    })
+    .filter((m: any) => m.isActive);
 
   return (
     <div 

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -73,8 +74,14 @@ export default function MethodPage() {
             const storeData = querySnapshot.docs[0].data();
             setStore(storeData);
 
-            // Check if requested method exists and is active for this merchant
-            const activeMethod = storeData.methods?.find((m: any) => m.id.toLowerCase() === (method as string).toLowerCase() && m.isActive);
+            // Check if requested method exists and is active using the nested map structure
+            const activeMethod = (storeData.methods || [])
+              .map((m: any) => {
+                const id = Object.keys(m)[0];
+                return { id, ...m[id] };
+              })
+              .find((m: any) => m.id.toLowerCase() === (method as string).toLowerCase() && m.isActive);
+            
             if (!activeMethod) {
               setNotFound(true);
             }
@@ -102,8 +109,14 @@ export default function MethodPage() {
     );
   }
 
-  // Find the specific method config from merchant data and merge with static fallbacks
-  const methodDataFromDB = store?.methods?.find((m: any) => m.id.toLowerCase() === (method as string).toLowerCase());
+  // Extract the specific method config from the nested DB structure
+  const methodDataFromDB = (store?.methods || [])
+    .map((m: any) => {
+      const id = Object.keys(m)[0];
+      return { id, ...m[id] };
+    })
+    .find((m: any) => m.id.toLowerCase() === (method as string).toLowerCase());
+
   const staticConfig = METHOD_STATIC_CONFIG[(method as string).toLowerCase()] || {
     name: methodDataFromDB?.name || (method as string).toUpperCase(),
     logo: "https://placehold.co/200x80?text=" + method,
