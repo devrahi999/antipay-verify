@@ -66,10 +66,13 @@ export default function MethodSelect() {
     router.push(`/s/${sessionId}/${methodId}`);
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (!sessionId) return;
     const sessionRef = doc(db, "payment_sessions", sessionId as string);
-    updateDoc(sessionRef, { status: 'cancelled' });
+    await updateDoc(sessionRef, { 
+      status: 'cancelled',
+      isUsed: true 
+    });
     router.push('/s/cancel');
   };
 
@@ -132,16 +135,14 @@ export default function MethodSelect() {
           >
             <Home className="w-6 h-6" />
           </Button>
-          <div className="flex items-center gap-1.5">
-             <Button 
-              variant="ghost" 
-              size="icon" 
-              className="w-8 h-8 hover:bg-gray-50 text-gray-700"
-              onClick={handleCancel}
-            >
-              <X className="w-7 h-7" />
-            </Button>
-          </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="w-8 h-8 hover:bg-gray-50 text-gray-700"
+            onClick={handleCancel}
+          >
+            <X className="w-7 h-7" />
+          </Button>
         </div>
 
         <div className="flex flex-col items-center py-6 px-6">
@@ -225,7 +226,7 @@ export default function MethodSelect() {
               <div className="p-5 space-y-4">
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">ইনভয়েসঃ</span>
-                  <span className="text-gray-600 font-bold">{session?.sessionId?.toString().slice(0, 12).toUpperCase()}</span>
+                  <span className="text-gray-600 font-bold break-all ml-4 text-right">{session?.sessionId}</span>
                 </div>
                 <div className="flex justify-between items-start text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">ডোমেইনঃ</span>
