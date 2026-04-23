@@ -23,20 +23,19 @@ export default function MethodSelect() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-start pb-8">
+    <div className="min-h-screen bg-[#EBF7E6] flex flex-col items-center justify-start pb-8">
       {/* Background Pattern */}
       <div 
-        className="fixed inset-0 pointer-events-none opacity-[0.02]" 
+        className="fixed inset-0 pointer-events-none opacity-[0.03]" 
         style={{ 
           backgroundImage: 'url("https://www.transparenttextures.com/patterns/diamond-upholstery.png")',
-          backgroundColor: '#F8FAFC'
         }} 
       />
 
       <div className="w-full max-w-[420px] flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
         
-        {/* Unified Modern Top Bar - Reduced radius and shadow */}
-        <div className="mx-3 mt-4 h-[60px] bg-[#f2f2f2] rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-between px-4">
+        {/* Top Bar - White Background & Reduced Radius */}
+        <div className="mx-3 mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-4">
           <Button 
             variant="ghost" 
             size="icon" 
@@ -55,7 +54,7 @@ export default function MethodSelect() {
 
         {/* Store Info Section */}
         <div className="flex flex-col items-center py-8 px-6">
-          <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-white shadow-sm mb-4">
+          <div className="relative w-20 h-20 rounded-md overflow-hidden border-2 border-white shadow-sm mb-4">
             <Image 
               src="https://picsum.photos/seed/store/200" 
               alt="Store Logo" 
@@ -67,13 +66,13 @@ export default function MethodSelect() {
           <h2 className="text-lg font-bold text-gray-700 mb-4 text-center">BD Esports Arena</h2>
           
           <div className="flex gap-4">
-            <Button variant="outline" size="icon" className="rounded-lg border-gray-100 bg-white text-gray-400 shadow-none">
+            <Button variant="outline" size="icon" className="rounded-md border-gray-100 bg-white text-gray-400 shadow-none">
               <HelpCircle className="w-5 h-5" />
             </Button>
-            <Button variant="outline" size="icon" className="rounded-lg border-gray-100 bg-white text-gray-400 shadow-none">
+            <Button variant="outline" size="icon" className="rounded-md border-gray-100 bg-white text-gray-400 shadow-none">
               <Info className="w-5 h-5" />
             </Button>
-            <Button variant="outline" size="icon" className="rounded-lg border-gray-100 bg-white text-gray-400 shadow-none">
+            <Button variant="outline" size="icon" className="rounded-md border-gray-100 bg-white text-gray-400 shadow-none">
               <AlertCircle className="w-5 h-5" />
             </Button>
           </div>
@@ -81,7 +80,7 @@ export default function MethodSelect() {
 
         {/* Category Tab */}
         <div className="px-4 mb-4">
-          <Button className="w-full bg-[#0052CC] hover:bg-[#0041a3] text-white font-bold h-11 rounded-lg shadow-sm tracking-wide">
+          <Button className="w-full bg-[#0052CC] hover:bg-[#0041a3] text-white font-bold h-11 rounded-md shadow-sm tracking-wide">
             মোবাইল ব্যাংকিং
           </Button>
         </div>
@@ -92,7 +91,7 @@ export default function MethodSelect() {
             <button
               key={method.id}
               onClick={() => handleSelect(method.id)}
-              className="group flex items-center justify-center p-4 h-24 bg-white border border-gray-100 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-blue-200 transition-all active:scale-95"
+              className="group flex items-center justify-center p-4 h-24 bg-white border border-gray-100 rounded-md shadow-sm hover:border-blue-200 transition-all active:scale-95"
             >
               <div className="relative w-full h-full flex items-center justify-center">
                 <img 
@@ -107,7 +106,7 @@ export default function MethodSelect() {
 
         {/* Bottom Amount Bar - Reduced shadow and radius */}
         <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 px-4 pb-4">
-          <div className="w-full max-w-[420px] h-[60px] bg-[#E1F0FF] rounded-xl flex items-center justify-center shadow-md border border-blue-50/50">
+          <div className="w-full max-w-[420px] h-[60px] bg-[#E1F0FF] rounded-md flex items-center justify-center shadow-sm border border-blue-50/50">
             <span className="text-[#0052CC] font-bold text-base">Pay ৳145.00</span>
           </div>
         </div>
