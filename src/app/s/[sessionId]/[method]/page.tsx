@@ -92,8 +92,13 @@ export default function MethodPage() {
     return { id, ...m[id] };
   }).find((m: any) => m.id.toLowerCase() === (method as string).toLowerCase());
 
-  const staticConfig = METHOD_STATIC_CONFIG[(method as string).toLowerCase()] || { name: methodDataFromDB?.name || (method as string).toUpperCase(), logo: "https://placehold.co/200x80?text=" + method, color: "#666666", dial: "*XXX#" };
-  const config = { ...staticConfig, logo: methodDataFromDB?.logoUrl || staticConfig.logo, number: methodDataFromDB?.number || "01XXXXXXXXX", name: methodDataFromDB?.name || staticConfig.name };
+  const staticConfig = METHOD_STATIC_CONFIG[(method as string).toLowerCase()] || { name: (method as string).toUpperCase(), logo: "https://placehold.co/200x80?text=" + method, color: "#666666", dial: "*XXX#" };
+  const config = { 
+    ...staticConfig, 
+    logo: methodDataFromDB?.logoUrl || staticConfig.logo, 
+    number: methodDataFromDB?.number || "01XXXXXXXXX", 
+    name: methodDataFromDB?.name || staticConfig.name 
+  };
 
   const copyNumber = () => {
     navigator.clipboard.writeText(config.number);
@@ -132,7 +137,7 @@ export default function MethodPage() {
           <Input value={trxId} onChange={(e) => setTrxId(e.target.value)} placeholder="ট্রানজেকশন আইডি দিন" className="bg-white border-transparent text-gray-900 h-10 rounded-lg text-center text-xs font-bold focus-visible:ring-0 mb-4" />
           <div className="space-y-3 text-[10px] leading-relaxed">
             <p className="font-bold">১. {config.dial} ডায়াল করে অথবা {config.name} অ্যাপ থেকে "<span className="underline">Send Money</span>" করুন।</p>
-            <p className="font-bold">২. নম্বরঃ <span className="text-black text-xs bg-white/50 px-1 px-1 rounded">{config.number}</span> <button onClick={copyNumber} className="text-[9px] font-black uppercase ml-1 underline">Copy</button></p>
+            <p className="font-bold">২. নম্বরঃ <span className="text-black text-xs bg-white/50 px-1 rounded">{config.number}</span> <button onClick={copyNumber} className="text-[9px] font-black uppercase ml-1 underline">Copy</button></p>
             <p className="font-bold">৩. পরিমাণঃ <span className="text-black">৳{Number(session?.amount).toFixed(2)}</span></p>
             <p className="font-bold">৪. এখন পেমেন্ট শেষে পাওয়া ট্রানজেকশন আইডি উপরে দিয়ে VERIFY করুন।</p>
           </div>

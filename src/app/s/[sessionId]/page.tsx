@@ -154,6 +154,7 @@ export default function MethodSelect() {
             <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
               {store?.supportPhone && <a href={`tel:${store.supportPhone}`} className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><PhoneCall className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">কল করুন</p></a>}
               {store?.whatsappNumber && <a href={`https://wa.me/${store.whatsappNumber.replace(/\+/g, '')}`} target="_blank" className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><MessageCircle className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">হোয়াটসঅ্যাপ</p></a>}
+              {store?.supportEmail && <a href={`mailto:${store.supportEmail}`} className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><Mail className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">ইমেইল করুন</p></a>}
             </div>
           )}
         </div>
