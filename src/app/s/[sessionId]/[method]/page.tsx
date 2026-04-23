@@ -67,14 +67,14 @@ export default function MethodPage() {
       className="min-h-screen flex flex-col items-center p-0 relative overflow-x-hidden pb-24"
       style={{ 
         backgroundColor: '#f8fafc',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.57 13.43-30 30-30 0 16.57-13.43 30-30 30zm0 0c0 16.57-13.43 30-30 30 0-16.57 13.43-30 30-30zm0 0c0-16.57-13.43-30-30-30 0 16.57 13.43 30 30 30zm0 0c0 16.57 13.43 30 30 30 0-16.57 13.43-30 30-30z' fill='%23000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.57 13.43-30 30-30 0 16.57-13.43 30-30 30zm0 0c0 16.57-13.43 30-30 30 0-16.57-13.43-30 30-30zm0 0c0-16.57-13.43-30-30-30 0 16.57-13.43 30 30 30zm0 0c0 16.57 13.43 30 30 30 0-16.57-13.43-30 30-30z' fill='%23000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
       <div className="w-full max-w-[420px] flex flex-col gap-3.5 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
         
         {/* Top Bar - Modern Soft Bar */}
-        <div className="mt-4 h-[60px] bg-white rounded-xl shadow-sm flex items-center justify-between px-3 border border-gray-100/50">
+        <div className="mt-4 h-[60px] bg-white rounded-lg shadow-sm flex items-center justify-between px-3 border border-gray-100/50">
           <Button 
             variant="ghost" 
             size="icon" 
