@@ -69,7 +69,7 @@ export default function MethodPage() {
     >
       <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0 pb-24 sm:pb-0">
         
-        {/* Top Nav Bar - Card style on mobile */}
+        {/* Top Nav Bar - Card style on mobile, integrated on desktop */}
         <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-14 sm:h-14 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
           <Button 
             variant="ghost" 
