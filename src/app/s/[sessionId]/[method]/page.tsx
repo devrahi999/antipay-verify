@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -63,7 +62,7 @@ export default function MethodPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center p-0 sm:p-0 relative overflow-x-hidden pb-24">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center p-0 relative overflow-x-hidden pb-24">
       {/* Background Pattern */}
       <div 
         className="fixed inset-0 pointer-events-none opacity-[0.03]" 
@@ -73,22 +72,22 @@ export default function MethodPage() {
         }} 
       />
 
-      <div className="w-full max-w-[420px] flex flex-col gap-5 px-4 z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="w-full max-w-[420px] flex flex-col gap-4 z-10 animate-in fade-in slide-in-from-bottom-4 duration-500 px-3">
         
-        {/* 1. Top Bar */}
-        <div className="flex items-center justify-between py-4">
+        {/* 1. Unified Modern Top Bar */}
+        <div className="mt-4 h-[64px] bg-[#f2f2f2] rounded-[20px] shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4">
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="icon" 
-            className="rounded-full w-10 h-10 border-gray-200 bg-white shadow-sm"
+            className="rounded-full w-10 h-10 bg-white shadow-sm border-none hover:bg-white/90"
             onClick={() => router.back()}
           >
             <ChevronLeft className="w-5 h-5 text-gray-400" />
           </Button>
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="icon" 
-            className="rounded-full w-10 h-10 border-gray-200 bg-white shadow-sm"
+            className="rounded-full w-10 h-10 bg-white shadow-sm border-none hover:bg-white/90"
             onClick={() => router.push(`/s/${sessionId}`)}
           >
             <X className="w-5 h-5 text-gray-400" />
@@ -120,7 +119,7 @@ export default function MethodPage() {
         </div>
 
         {/* 5. Instruction & Input Box */}
-        <div className={`w-full rounded-[20px] p-6 ${config.boxBg} text-white shadow-xl`}>
+        <div className={`w-full rounded-[20px] p-6 ${config.boxBg} text-white shadow-xl mb-4`}>
           <h2 className="text-[15px] font-bold mb-5 text-center">ট্রানজেকশন আইডি দিন</h2>
           
           <div className="relative mb-8">
