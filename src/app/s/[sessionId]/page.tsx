@@ -22,14 +22,26 @@ export default function MethodSelect() {
   const db = useFirestore();
   const [view, setView] = useState<"methods" | "details" | "support">("methods");
   const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     async function fetchSession() {
       if (!sessionId) return;
-      const docRef = doc(db, "payment_sessions", sessionId as string);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setSession(docSnap.data());
+      try {
+        const docRef = doc(db, "payment_sessions", sessionId as string);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSession(docSnap.data());
+          setNotFound(false);
+        } else {
+          setNotFound(true);
+        }
+      } catch (error) {
+        console.error("Error fetching session:", error);
+        setNotFound(true);
+      } finally {
+        setLoading(false);
       }
     }
     fetchSession();
@@ -45,7 +57,21 @@ export default function MethodSelect() {
     backgroundRepeat: 'repeat',
   };
 
-  if (!session) return <div className="min-h-screen flex items-center justify-center">Loading session...</div>;
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#F7F8F9]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </main>
+    );
+  }
+
+  if (notFound) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#F7F8F9]">
+        <h1 className="text-xl font-medium text-muted-foreground">404 not found</h1>
+      </main>
+    );
+  }
 
   return (
     <div 

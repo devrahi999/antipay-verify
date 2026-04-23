@@ -51,23 +51,48 @@ export default function MethodPage() {
   const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   const config = METHOD_CONFIG[method as keyof typeof METHOD_CONFIG];
 
   useEffect(() => {
     async function fetchSession() {
       if (!sessionId) return;
-      const docRef = doc(db, "payment_sessions", sessionId as string);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setSession(docSnap.data());
+      try {
+        const docRef = doc(db, "payment_sessions", sessionId as string);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSession(docSnap.data());
+          setNotFound(false);
+        } else {
+          setNotFound(true);
+        }
+      } catch (error) {
+        console.error("Error fetching session:", error);
+        setNotFound(true);
+      } finally {
+        setLoading(false);
       }
     }
     fetchSession();
   }, [sessionId, db]);
 
-  if (!config) return <div className="p-8 text-center font-bold">Invalid Method</div>;
-  if (!session) return <div className="p-8 text-center font-bold">Loading...</div>;
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#F7F8F9]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </main>
+    );
+  }
+
+  if (notFound || !config) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#F7F8F9]">
+        <h1 className="text-xl font-medium text-muted-foreground">404 not found</h1>
+      </main>
+    );
+  }
 
   const copyNumber = () => {
     navigator.clipboard.writeText(config.number);
@@ -89,12 +114,11 @@ export default function MethodPage() {
     setIsVerifying(true);
     
     try {
-      // Call the real verify API
       const response = await fetch('/api/v1/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': session.apiKey // Using the apiKey stored in session for validation
+          'x-api-key': session.apiKey
         },
         body: JSON.stringify({
           sessionId,
