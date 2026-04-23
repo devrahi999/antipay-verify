@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -32,8 +31,14 @@ export default function MethodSelect() {
         const docRef = doc(db, "payment_sessions", sessionId as string);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setSession(docSnap.data());
-          setNotFound(false);
+          const data = docSnap.data();
+          // If session is already used, show 404
+          if (data.isUsed === true) {
+            setNotFound(true);
+          } else {
+            setSession(data);
+            setNotFound(false);
+          }
         } else {
           setNotFound(true);
         }
@@ -171,7 +176,7 @@ export default function MethodSelect() {
               <div className="p-5 space-y-4">
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">ইনভয়েসঃ</span>
-                  <span className="text-gray-600 font-bold">{session.sessionId?.toString().slice(0, 12).toUpperCase()}</span>
+                  <span className="text-gray-600 font-bold">{session?.sessionId?.toString().slice(0, 12).toUpperCase()}</span>
                 </div>
                 <div className="flex justify-between items-start text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">ডোমেইনঃ</span>
@@ -179,11 +184,11 @@ export default function MethodSelect() {
                 </div>
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">পরিমাণঃ</span>
-                  <span className="text-gray-600 font-bold">৳{Number(session.amount).toFixed(2)}</span>
+                  <span className="text-gray-600 font-bold">৳{Number(session?.amount).toFixed(2)}</span>
                 </div>
                 <div className="pt-2 border-t border-dashed border-gray-100 flex justify-between items-center">
                   <span className="text-gray-500 font-bold text-[10px] uppercase">মোট প্রদেয় পরিমাণঃ</span>
-                  <span className="text-[#10853D] font-black text-xs">৳{Number(session.amount).toFixed(2)}</span>
+                  <span className="text-[#10853D] font-black text-xs">৳{Number(session?.amount).toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -221,7 +226,7 @@ export default function MethodSelect() {
 
         <div className="fixed sm:static bottom-0 left-0 right-0 flex justify-center z-50">
           <div className="w-full sm:max-w-none h-14 sm:h-12 bg-[#F0FDF4] flex items-center justify-center border-t border-green-100 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] sm:shadow-none rounded-t-xl sm:rounded-none">
-            <span className="text-[#10853D] font-black text-[11px] uppercase tracking-[0.2em]">Pay ৳{Number(session.amount).toFixed(2)}</span>
+            <span className="text-[#10853D] font-black text-[11px] uppercase tracking-[0.2em]">Pay ৳{Number(session?.amount).toFixed(2)}</span>
           </div>
         </div>
       </div>

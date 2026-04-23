@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
 import { doc, runTransaction, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
@@ -21,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key in 'stores' collection (Field is 'apiKey')
+    // 1. Validate API Key in 'stores' collection
     const storesRef = collection(db, 'stores');
     const q = query(storesRef, where('apiKey', '==', apiKeyFromHeader), where('status', '==', 'active'));
     const querySnapshot = await getDocs(q);
@@ -40,7 +39,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ status: false, message: 'Missing parameters' }, { status: 400 });
     }
 
-    // Normalize transaction ID (Trim and Uppercase)
     const trxId = rawTrxId.trim().toUpperCase();
 
     // 3. Start Atomic Transaction
@@ -54,12 +52,11 @@ export async function POST(req: NextRequest) {
       // Session checks
       if (!sessionSnap.exists()) throw new Error('Invalid session');
       const sessionData = sessionSnap.data();
-      if (sessionData.status !== 'pending') throw new Error('Already used');
+      if (sessionData.isUsed === true || sessionData.status !== 'pending') throw new Error('Already used');
       
       const expiresAt = parseDate(sessionData.expiresAt);
       if (new Date() > expiresAt) throw new Error('Session expired');
       
-      // Ensure the session belongs to the user associated with the API Key
       if (sessionData.userId !== userIdFromStore) throw new Error('User mismatch');
 
       // Transaction checks
@@ -67,24 +64,21 @@ export async function POST(req: NextRequest) {
       const trxData = trxSnap.data();
       
       if (trxData.status !== 'unused') throw new Error('Already used');
-      
-      // Method check
       if (trxData.source?.toLowerCase() !== method?.toLowerCase()) throw new Error('Method mismatch');
       
-      // Amount check
       const sessionAmount = Number(sessionData.amount);
       const trxAmount = Number(trxData.amount);
       if (Math.abs(trxAmount - sessionAmount) > 0.01) {
         throw new Error('Amount mismatch');
       }
       
-      // Transaction must belong to the same merchant user
       if (trxData.userId !== userIdFromStore) throw new Error('Transaction user mismatch');
 
       // Execute updates
       transaction.update(trxRef, { status: 'used' });
       transaction.update(sessionRef, {
         status: 'verified',
+        isUsed: true,
         method: method,
         trxId: trxId,
         verifiedAt: new Date().toISOString()

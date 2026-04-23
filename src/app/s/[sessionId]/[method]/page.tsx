@@ -62,8 +62,14 @@ export default function MethodPage() {
         const docRef = doc(db, "payment_sessions", sessionId as string);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setSession(docSnap.data());
-          setNotFound(false);
+          const data = docSnap.data();
+          // If session is already used, show 404
+          if (data.isUsed === true) {
+            setNotFound(true);
+          } else {
+            setSession(data);
+            setNotFound(false);
+          }
         } else {
           setNotFound(true);
         }
@@ -208,7 +214,7 @@ export default function MethodPage() {
               </div>
             </div>
             <div className="text-right">
-              <span className="text-sm font-black text-gray-800">৳{Number(session.amount).toFixed(2)}</span>
+              <span className="text-sm font-black text-gray-800">৳{Number(session?.amount).toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -254,7 +260,7 @@ export default function MethodPage() {
 
             <div className="flex items-start gap-2.5">
               <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
-              <p className="font-bold">টাকার পরিমাণঃ <span className="text-black">৳{Number(session.amount).toFixed(2)}</span></p>
+              <p className="font-bold">টাকার পরিমাণঃ <span className="text-black">৳{Number(session?.amount).toFixed(2)}</span></p>
             </div>
 
             <div className="flex items-start gap-2.5">

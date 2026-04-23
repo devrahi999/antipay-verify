@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
 import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
@@ -42,6 +41,7 @@ export async function POST(req: NextRequest) {
       userId,
       amount,
       status: 'pending',
+      isUsed: false,
       createdAt: new Date().toISOString(),
       expiresAt: expiresAt.toISOString(),
       method: null,
