@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Info, HelpCircle, X, Home, PhoneCall, MessageCircle, Mail } from "lucide-react";
+import { Info, HelpCircle, X, Home, PhoneCall, MessageCircle, Mail, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useFirestore } from "@/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 const PAYMENT_METHODS = [
   { id: "bkash", name: "bKash", logo: "https://i.imgur.com/GeOlI04.png" },
@@ -21,35 +21,44 @@ export default function MethodSelect() {
   const db = useFirestore();
   const [view, setView] = useState<"methods" | "details" | "support">("methods");
   const [session, setSession] = useState<any>(null);
+  const [store, setStore] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    async function fetchSession() {
+    async function fetchData() {
       if (!sessionId) return;
       try {
         const docRef = doc(db, "payment_sessions", sessionId as string);
         const docSnap = await getDoc(docRef);
+        
         if (docSnap.exists()) {
-          const data = docSnap.data();
-          // If session is already used, show 404
-          if (data.isUsed === true) {
+          const sessionData = docSnap.data();
+          if (sessionData.isUsed === true) {
             setNotFound(true);
-          } else {
-            setSession(data);
-            setNotFound(false);
+            return;
+          }
+          setSession(sessionData);
+
+          // Fetch Store Data
+          const storesRef = collection(db, "stores");
+          const q = query(storesRef, where("apiKey", "==", sessionData.apiKey));
+          const querySnapshot = await getDocs(q);
+          
+          if (!querySnapshot.empty) {
+            setStore(querySnapshot.docs[0].data());
           }
         } else {
           setNotFound(true);
         }
       } catch (error) {
-        console.error("Error fetching session:", error);
+        console.error("Error fetching data:", error);
         setNotFound(true);
       } finally {
         setLoading(false);
       }
     }
-    fetchSession();
+    fetchData();
   }, [sessionId, db]);
 
   const handleSelect = (method: string) => {
@@ -107,22 +116,28 @@ export default function MethodSelect() {
         </div>
 
         <div className="flex flex-col items-center py-6 px-6">
-          <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white shadow-sm mb-3 bg-white">
-            <Image 
-              src="https://picsum.photos/seed/store/200" 
-              alt="Store Logo" 
-              fill 
-              className="object-cover"
-              data-ai-hint="store logo"
-            />
+          <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white shadow-sm mb-3 bg-gray-50 flex items-center justify-center">
+            {store?.logoUrl ? (
+              <Image 
+                src={store.logoUrl} 
+                alt="Store Logo" 
+                fill 
+                className="object-cover"
+                data-ai-hint="store logo"
+              />
+            ) : (
+              <User className="w-8 h-8 text-gray-300" />
+            )}
           </div>
-          <h2 className="text-xs font-black text-gray-700 mb-4 text-center uppercase tracking-wide">BD Esports Arena</h2>
+          <h2 className="text-xs font-black text-gray-700 mb-4 text-center uppercase tracking-wide">
+            {store?.storeName || "Merchant Store"}
+          </h2>
           
           <div className="flex gap-2">
             <Button 
               variant="outline" 
               size="sm" 
-              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'support' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-500'}`}
+              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'support' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-50'}`}
               onClick={() => setView('support')}
             >
               <HelpCircle className="w-3.5 h-3.5" /> সাপোর্ট
@@ -130,7 +145,7 @@ export default function MethodSelect() {
             <Button 
               variant="outline" 
               size="sm" 
-              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'details' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-500'}`}
+              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'details' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-50'}`}
               onClick={() => setView('details')}
             >
               <Info className="w-3.5 h-3.5" /> বিস্তারিত
@@ -180,7 +195,7 @@ export default function MethodSelect() {
                 </div>
                 <div className="flex justify-between items-start text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">ডোমেইনঃ</span>
-                  <span className="text-gray-600 font-bold text-right max-w-[150px]">bd-esports-arena.com</span>
+                  <span className="text-gray-600 font-bold text-right max-w-[150px]">{store?.domain || "merchant-site.com"}</span>
                 </div>
                 <div className="flex justify-between items-center text-[10px]">
                   <span className="text-gray-400 font-bold uppercase">পরিমাণঃ</span>
@@ -196,30 +211,40 @@ export default function MethodSelect() {
 
           {view === 'support' && (
             <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
+              <a 
+                href={store?.supportPhone ? `tel:${store.supportPhone}` : "#"}
+                className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
+              >
                 <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
                   <PhoneCall className="w-5 h-5" />
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
                 </div>
-              </button>
-              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
+              </a>
+              <a 
+                href={store?.supportWhatsapp ? `https://wa.me/${store.supportWhatsapp}` : "#"}
+                target="_blank"
+                className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
+              >
                 <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে হোয়াটসঅ্যাপ নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
                 </div>
-              </button>
-              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
+              </a>
+              <a 
+                href={store?.supportEmail ? `mailto:${store.supportEmail}` : "#"}
+                className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]"
+              >
                 <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে ইমেইল করতে এখানে ক্লিক করুন।</p>
                 </div>
-              </button>
+              </a>
             </div>
           )}
         </div>

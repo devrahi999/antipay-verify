@@ -5,7 +5,7 @@ service cloud.firestore {
     // --- AntiPay Gateway Rules (At Top for Priority) ---
 
     match /stores/{storeId} {
-      // Allow API routes to query stores by apiKey field
+      // Allow API and Checkout pages to query stores by apiKey field
       allow read: if true;
       allow write: if false; // Only via console/admin
     }

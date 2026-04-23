@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, X, Copy, Check } from "lucide-react";
+import { ChevronLeft, X, Copy, Check, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore } from "@/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 const METHOD_CONFIG = {
   bkash: {
@@ -50,37 +50,46 @@ export default function MethodPage() {
   const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [session, setSession] = useState<any>(null);
+  const [store, setStore] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   const config = METHOD_CONFIG[method as keyof typeof METHOD_CONFIG];
 
   useEffect(() => {
-    async function fetchSession() {
+    async function fetchData() {
       if (!sessionId) return;
       try {
         const docRef = doc(db, "payment_sessions", sessionId as string);
         const docSnap = await getDoc(docRef);
+        
         if (docSnap.exists()) {
-          const data = docSnap.data();
-          // If session is already used, show 404
-          if (data.isUsed === true) {
+          const sessionData = docSnap.data();
+          if (sessionData.isUsed === true) {
             setNotFound(true);
-          } else {
-            setSession(data);
-            setNotFound(false);
+            return;
+          }
+          setSession(sessionData);
+
+          // Fetch Store Data
+          const storesRef = collection(db, "stores");
+          const q = query(storesRef, where("apiKey", "==", sessionData.apiKey));
+          const querySnapshot = await getDocs(q);
+          
+          if (!querySnapshot.empty) {
+            setStore(querySnapshot.docs[0].data());
           }
         } else {
           setNotFound(true);
         }
       } catch (error) {
-        console.error("Error fetching session:", error);
+        console.error("Error fetching data:", error);
         setNotFound(true);
       } finally {
         setLoading(false);
       }
     }
-    fetchSession();
+    fetchData();
   }, [sessionId, db]);
 
   if (loading) {
@@ -144,7 +153,7 @@ export default function MethodPage() {
           title: "অভিনন্দন!",
           description: "আপনার পেমেন্টটি সফলভাবে সম্পন্ন হয়েছে।",
         });
-        setTimeout(() => router.push('/'), 2000);
+        setTimeout(() => router.push('/s/success'), 1500);
       } else {
         toast({
           variant: "destructive",
@@ -205,11 +214,15 @@ export default function MethodPage() {
         <div className="px-5 mb-6">
           <div className="bg-white rounded-lg border border-gray-100 p-3 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
-                <Image src="https://picsum.photos/seed/store/120" width={40} height={40} alt="store" className="object-cover" />
+              <div className="w-10 h-10 rounded-lg border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0 relative">
+                {store?.logoUrl ? (
+                  <Image src={store.logoUrl} fill alt="store" className="object-cover" />
+                ) : (
+                  <User className="w-5 h-5 text-gray-300" />
+                )}
               </div>
               <div className="flex flex-col">
-                <h3 className="font-bold text-gray-700 text-[11px]">BD Esports Arena</h3>
+                <h3 className="font-bold text-gray-700 text-[11px]">{store?.storeName || "Merchant Store"}</h3>
                 <p className="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Invoice: <span className="text-gray-500">{sessionId?.toString().slice(0, 12).toUpperCase()}</span></p>
               </div>
             </div>
