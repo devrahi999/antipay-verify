@@ -1,8 +1,9 @@
+
 "use client";
 
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Info, HelpCircle, X, Home } from "lucide-react";
+import { Info, HelpCircle, X, Home, PhoneCall, MessageCircle, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -16,7 +17,7 @@ const PAYMENT_METHODS = [
 export default function MethodSelect() {
   const { sessionId } = useParams();
   const router = useRouter();
-  const [view, setView] = useState<"methods" | "details">("methods");
+  const [view, setView] = useState<"methods" | "details" | "support">("methods");
 
   const handleSelect = (method: string) => {
     router.push(`/s/${sessionId}/${method}`);
@@ -30,17 +31,17 @@ export default function MethodSelect() {
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center justify-start sm:justify-center pb-8 relative overflow-x-hidden"
+      className="min-h-screen flex flex-col items-center justify-start sm:justify-center pb-0 relative overflow-x-hidden"
       style={bgPattern}
     >
       <div className="w-full sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden min-h-screen sm:min-h-0">
         
-        {/* Top Nav Bar */}
-        <div className="mx-5 sm:mx-0 mt-4 sm:mt-0 h-10 bg-white rounded-lg sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
+        {/* Top Nav Bar - Compact & Rounded */}
+        <div className="mx-5 sm:mx-0 mt-3 sm:mt-0 h-9 bg-white rounded-lg sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-8 h-8 hover:bg-gray-50 text-gray-700"
+            className="w-7 h-7 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push('/')}
           >
             <Home className="w-5 h-5" />
@@ -52,7 +53,7 @@ export default function MethodSelect() {
              <Button 
               variant="ghost" 
               size="icon" 
-              className="w-8 h-8 hover:bg-gray-50 text-gray-700"
+              className="w-7 h-7 hover:bg-gray-50 text-gray-700"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -70,16 +71,21 @@ export default function MethodSelect() {
               data-ai-hint="store logo"
             />
           </div>
-          <h2 className="text-xs font-black text-gray-700 mb-3 text-center uppercase tracking-wide">BD Esports Arena</h2>
+          <h2 className="text-xs font-black text-gray-700 mb-4 text-center uppercase tracking-wide">BD Esports Arena</h2>
           
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="h-8 rounded-md border-gray-100 bg-white text-gray-500 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'support' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-500'}`}
+              onClick={() => setView('support')}
+            >
               <HelpCircle className="w-3.5 h-3.5" /> সাপোর্ট
             </Button>
             <Button 
               variant="outline" 
               size="sm" 
-              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'details' ? 'bg-[#10853D] text-white' : 'bg-white text-gray-500'}`}
+              className={`h-8 rounded-md border-gray-100 text-[10px] font-bold uppercase gap-1.5 shadow-none px-3 transition-colors ${view === 'details' ? 'bg-[#10853D] text-white border-[#10853D]' : 'bg-white text-gray-500'}`}
               onClick={() => setView('details')}
             >
               <Info className="w-3.5 h-3.5" /> বিস্তারিত
@@ -99,8 +105,8 @@ export default function MethodSelect() {
 
         {/* Conditional Content */}
         <div className="px-4 mb-24 sm:mb-6">
-          {view === 'methods' ? (
-            <div className="grid grid-cols-2 gap-3">
+          {view === 'methods' && (
+            <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
               {PAYMENT_METHODS.map((method) => (
                 <button
                   key={method.id}
@@ -117,29 +123,60 @@ export default function MethodSelect() {
                 </button>
               ))}
             </div>
-          ) : (
+          )}
+
+          {view === 'details' && (
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="bg-blue-50/50 py-3 text-center border-b border-blue-50">
                 <h3 className="text-[#1D4ED8] font-bold text-xs">বিস্তারিত</h3>
               </div>
               <div className="p-5 space-y-4">
                 <div className="flex justify-between items-center text-[10px]">
-                  <span className="text-gray-400 font-bold">ইনভয়েসঃ</span>
+                  <span className="text-gray-400 font-bold uppercase">ইনভয়েসঃ</span>
                   <span className="text-gray-600 font-bold">IHN TOPUP</span>
                 </div>
                 <div className="flex justify-between items-start text-[10px]">
-                  <span className="text-gray-400 font-bold">ডোমেইনঃ</span>
+                  <span className="text-gray-400 font-bold uppercase">ডোমেইনঃ</span>
                   <span className="text-gray-600 font-bold text-right max-w-[150px]">bd-esports-arena.onrender.com</span>
                 </div>
                 <div className="flex justify-between items-center text-[10px]">
-                  <span className="text-gray-400 font-bold">পরিমাণঃ</span>
+                  <span className="text-gray-400 font-bold uppercase">পরিমাণঃ</span>
                   <span className="text-gray-600 font-bold">৳145.00</span>
                 </div>
                 <div className="pt-2 border-t border-dashed border-gray-100 flex justify-between items-center">
-                  <span className="text-gray-500 font-bold text-[10px]">মোট প্রদেয় পরিমাণঃ</span>
+                  <span className="text-gray-500 font-bold text-[10px] uppercase">মোট প্রদেয় পরিমাণঃ</span>
                   <span className="text-[#1D4ED8] font-black text-xs">৳145.00</span>
                 </div>
               </div>
+            </div>
+          )}
+
+          {view === 'support' && (
+            <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-blue-400 transition-all active:scale-[0.98]">
+                <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                  <PhoneCall className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
+                </div>
+              </button>
+              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all active:scale-[0.98]">
+                <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে হোয়াটসঅ্যাপ নাম্বারে যোগাযোগ করতে এখানে ক্লিক করুন।</p>
+                </div>
+              </button>
+              <button className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-yellow-400 transition-all active:scale-[0.98]">
+                <div className="w-11 h-11 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-500">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] font-bold text-gray-600">আমাদের সাপোর্টে ইমেইল করতে এখানে ক্লিক করুন।</p>
+                </div>
+              </button>
             </div>
           )}
         </div>
