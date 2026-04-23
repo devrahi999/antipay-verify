@@ -32,6 +32,8 @@ const toastVariants = cva(
         default: "bg-white/12 dark:bg-black/35 text-foreground [background:linear-gradient(to_bottom,rgba(255,255,255,0.25),rgba(255,255,255,0.05))]",
         destructive:
           "bg-red-500/20 dark:bg-red-900/35 border-red-500/30 text-red-900 dark:text-red-100 [background:linear-gradient(to_bottom,rgba(255,100,100,0.2),rgba(255,0,0,0.05))]",
+        success:
+          "bg-green-500/20 dark:bg-green-900/35 border-green-500/30 text-green-900 dark:text-green-100 [background:linear-gradient(to_bottom,rgba(100,255,100,0.2),rgba(0,255,0,0.05))]",
       },
     },
     defaultVariants: {

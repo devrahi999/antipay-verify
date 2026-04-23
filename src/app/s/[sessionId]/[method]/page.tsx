@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -97,7 +96,11 @@ export default function MethodPage() {
   const copyNumber = () => {
     navigator.clipboard.writeText(config.number);
     setCopied(true);
-    toast({ title: "Copied!", description: "Number copied to clipboard." });
+    toast({ 
+      variant: "success", 
+      title: "Copied!", 
+      description: "Number copied to clipboard." 
+    });
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -131,6 +134,7 @@ export default function MethodPage() {
 
       if (response.ok && result.status === 'verified') {
         toast({
+          variant: "success",
           title: "অভিনন্দন!",
           description: "আপনার পেমেন্টটি সফলভাবে সম্পন্ন হয়েছে।",
         });
