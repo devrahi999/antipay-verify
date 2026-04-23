@@ -26,7 +26,7 @@ export default function MethodSelect() {
       className="min-h-screen flex flex-col items-center justify-start pb-8 relative overflow-x-hidden"
       style={{ 
         backgroundColor: '#eef2f6',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='4' y='4' width='32' height='32' rx='8' ry='8' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.0'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
       }}
     >
