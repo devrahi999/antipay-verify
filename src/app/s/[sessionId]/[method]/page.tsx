@@ -3,13 +3,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, X, Copy, Check, User } from "lucide-react";
+import { ChevronLeft, X, Copy, Check, User, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore } from "@/firebase";
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 
 const METHOD_STATIC_CONFIG: Record<string, { name: string, logo: string, color: string, dial: string }> = {
   bkash: {
@@ -74,7 +74,6 @@ export default function MethodPage() {
             const storeData = querySnapshot.docs[0].data();
             setStore(storeData);
 
-            // Check if requested method exists and is active using the nested map structure
             const activeMethod = (storeData.methods || [])
               .map((m: any) => {
                 const id = Object.keys(m)[0];
@@ -109,7 +108,6 @@ export default function MethodPage() {
     );
   }
 
-  // Extract the specific method config from the nested DB structure
   const methodDataFromDB = (store?.methods || [])
     .map((m: any) => {
       const id = Object.keys(m)[0];
@@ -150,6 +148,22 @@ export default function MethodPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleCancel = () => {
+    if (!sessionId) return;
+    const sessionRef = doc(db, "payment_sessions", sessionId as string);
+    updateDoc(sessionRef, { status: 'cancelled' });
+    router.push('/s/cancel');
+  };
+
+  const handleHome = () => {
+    if (store?.websiteUrl) {
+      const url = store.websiteUrl.startsWith('http') ? store.websiteUrl : `https://${store.websiteUrl}`;
+      window.location.href = url;
+    } else {
+      router.push('/');
+    }
+  };
+
   const handleVerify = async () => {
     if (!trxId) {
       toast({
@@ -184,7 +198,7 @@ export default function MethodPage() {
           title: "অভিনন্দন!",
           description: "আপনার পেমেন্টটি সফলভাবে সম্পন্ন হয়েছে।",
         });
-        setTimeout(() => router.push('/s/success'), 1500);
+        setTimeout(() => router.push(`/s/success?sessionId=${sessionId}`), 1500);
       } else {
         toast({
           variant: "destructive",
@@ -221,18 +235,28 @@ export default function MethodPage() {
             variant="ghost" 
             size="icon" 
             className="w-7 h-7 hover:bg-gray-50 text-gray-700"
-            onClick={() => router.back()}
+            onClick={handleHome}
           >
-            <ChevronLeft className="w-6 h-6" />
+            <Home className="w-6 h-6" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="w-7 h-7 hover:bg-gray-50 text-gray-700"
-            onClick={() => router.push('/s/cancel')}
-          >
-            <X className="w-6 h-6" />
-          </Button>
+          <div className="flex items-center gap-1.5">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="w-7 h-7 hover:bg-gray-50 text-gray-700"
+              onClick={() => router.back()}
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="w-7 h-7 hover:bg-gray-50 text-gray-700"
+              onClick={handleCancel}
+            >
+              <X className="w-6 h-6" />
+            </Button>
+          </div>
         </div>
 
         <div className="flex flex-col items-center justify-center py-6">

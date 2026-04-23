@@ -7,7 +7,7 @@ import { Info, HelpCircle, X, Home, PhoneCall, MessageCircle, Mail, User } from 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useFirestore } from "@/firebase";
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, updateDoc } from "firebase/firestore";
 
 // Fallback logos for standard methods if DB doesn't provide one
 const DEFAULT_LOGOS: Record<string, string> = {
@@ -66,6 +66,22 @@ export default function MethodSelect() {
     router.push(`/s/${sessionId}/${methodId}`);
   };
 
+  const handleCancel = () => {
+    if (!sessionId) return;
+    const sessionRef = doc(db, "payment_sessions", sessionId as string);
+    updateDoc(sessionRef, { status: 'cancelled' });
+    router.push('/s/cancel');
+  };
+
+  const handleHome = () => {
+    if (store?.websiteUrl) {
+      const url = store.websiteUrl.startsWith('http') ? store.websiteUrl : `https://${store.websiteUrl}`;
+      window.location.href = url;
+    } else {
+      router.push('/');
+    }
+  };
+
   const bgPattern = {
     backgroundColor: '#eef2f6',
     backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='4' ry='4' fill='none' stroke='rgba(0,0,0,0.08)' stroke-width='1.2'/%3E%3C/svg%3E")`,
@@ -88,7 +104,6 @@ export default function MethodSelect() {
     );
   }
 
-  // Filter active methods from store data using the nested map structure
   const activeMethods = (store?.methods || [])
     .map((m: any) => {
       const id = Object.keys(m)[0];
@@ -113,7 +128,7 @@ export default function MethodSelect() {
             variant="ghost" 
             size="icon" 
             className="w-8 h-8 hover:bg-gray-50 text-gray-700"
-            onClick={() => router.push('/')}
+            onClick={handleHome}
           >
             <Home className="w-6 h-6" />
           </Button>
@@ -122,7 +137,7 @@ export default function MethodSelect() {
               variant="ghost" 
               size="icon" 
               className="w-8 h-8 hover:bg-gray-50 text-gray-700"
-              onClick={() => router.push('/s/cancel')}
+              onClick={handleCancel}
             >
               <X className="w-7 h-7" />
             </Button>
