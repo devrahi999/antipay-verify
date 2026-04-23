@@ -50,7 +50,7 @@ export default function CancelPage() {
         <div className="px-5 pb-12 sm:pb-8">
           <Button 
             onClick={() => router.push('/')}
-            className="w-full h-12 sm:h-11 bg-white hover:bg-gray-50 text-[#818CF8] font-bold text-xs rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-gray-100 gap-3 flex items-center justify-center transition-all active:scale-[0.98] uppercase tracking-widest"
+            className="w-full h-12 sm:h-11 bg-white hover:bg-gray-50 text-[#10853D] font-bold text-xs rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-gray-100 gap-3 flex items-center justify-center transition-all active:scale-[0.98] uppercase tracking-widest"
           >
             <Home className="w-5 h-5" />
             <span>ওয়েবসাইটে ফিরে যান!</span>
