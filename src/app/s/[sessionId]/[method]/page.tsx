@@ -177,10 +177,10 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Verify Button - Bottom Action */}
-        <div className="px-5 pb-5 mt-auto sm:mt-0">
+        {/* Verify Button - Bottom Action Flush on Mobile */}
+        <div className="mt-auto sm:mt-0 px-0 pb-0 sm:px-5 sm:pb-5">
           <Button 
-            className="w-full h-11 rounded-t-xl rounded-b-lg text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0"
+            className="w-full h-12 sm:h-11 rounded-t-xl rounded-b-none sm:rounded-b-lg text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0"
           >
             VERIFY
           </Button>
@@ -194,4 +194,3 @@ export default function MethodPage() {
     </div>
   );
 }
-
