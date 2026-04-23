@@ -16,7 +16,7 @@ const METHOD_CONFIG = {
     color: "#E2136E",
     boxBg: "bg-[#E2136E]",
     dial: "*247#",
-    number: "01786543210",
+    number: "01336166870",
   },
   nagad: {
     name: "Nagad",
@@ -24,7 +24,7 @@ const METHOD_CONFIG = {
     color: "#D12026",
     boxBg: "bg-[#D12026]",
     dial: "*167#",
-    number: "01336166870",
+    number: "01786543210",
   },
   rocket: {
     name: "Rocket",
@@ -63,116 +63,130 @@ export default function MethodPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0F4F8] flex flex-col items-center justify-center p-4 sm:p-8">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center p-0 sm:p-0 relative overflow-x-hidden pb-24">
       {/* Background Pattern */}
       <div 
-        className="fixed inset-0 pointer-events-none opacity-[0.05]" 
+        className="fixed inset-0 pointer-events-none opacity-[0.03]" 
         style={{ 
           backgroundImage: 'url("https://www.transparenttextures.com/patterns/diamond-upholstery.png")',
-          backgroundColor: '#F0F4F8'
+          backgroundColor: '#F8FAFC'
         }} 
       />
 
-      <div className="w-full max-w-[440px] bg-white rounded-[20px] shadow-2xl flex flex-col relative overflow-hidden z-10 border border-gray-100 animate-in fade-in zoom-in-95 duration-300">
+      <div className="w-full max-w-[420px] flex flex-col gap-5 px-4 z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
         
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 px-5">
+        {/* 1. Top Bar */}
+        <div className="flex items-center justify-between py-4">
           <Button 
             variant="outline" 
             size="icon" 
-            className="rounded-full w-8 h-8 border-gray-200 text-gray-400"
+            className="rounded-full w-10 h-10 border-gray-200 bg-white shadow-sm"
             onClick={() => router.back()}
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-5 h-5 text-gray-400" />
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-full w-8 h-8 text-gray-400">
-            <X className="w-4 h-4" />
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="rounded-full w-10 h-10 border-gray-200 bg-white shadow-sm"
+            onClick={() => router.push(`/s/${sessionId}`)}
+          >
+            <X className="w-5 h-5 text-gray-400" />
           </Button>
         </div>
 
-        <div className="flex-1 px-6 pb-6">
-          {/* Logo Section */}
-          <div className="flex flex-col items-center justify-center pb-6">
-            <div className="relative h-12 w-28">
-               <img src={config.logo} alt={config.name} className="h-full w-full object-contain" />
-            </div>
-            <span className="text-[9px] font-bold text-pink-600 tracking-widest mt-0.5">PERSONAL</span>
+        {/* 2. Logo Section */}
+        <div className="flex flex-col items-center justify-center py-2">
+          <div className="relative h-14 w-32">
+             <img src={config.logo} alt={config.name} className="h-full w-full object-contain" />
+          </div>
+          <span className="text-[10px] font-black text-pink-600 tracking-[0.2em] mt-1">PERSONAL</span>
+        </div>
+
+        {/* 3. Store Card */}
+        <div className="w-full bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] p-4 flex items-center gap-4">
+          <div className="w-14 h-14 rounded-full border border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0 shadow-inner">
+            <Image src="https://picsum.photos/seed/store/120" width={56} height={56} alt="store" className="object-cover" />
+          </div>
+          <div className="flex flex-col">
+            <h3 className="font-bold text-gray-700 text-base">BD Esports Arena</h3>
+            <p className="text-[11px] text-gray-400 font-medium">ইনভয়েস আইডিঃ <span className="font-bold text-gray-500 uppercase">ssicbt940147</span></p>
+          </div>
+        </div>
+
+        {/* 4. Amount Bar */}
+        <div className="w-full bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] px-5 py-4 flex items-center">
+          <span className="text-xl font-extrabold text-[#5F6E8C]">৳145.00</span>
+        </div>
+
+        {/* 5. Instruction & Input Box */}
+        <div className={`w-full rounded-[20px] p-6 ${config.boxBg} text-white shadow-xl`}>
+          <h2 className="text-[15px] font-bold mb-5 text-center">ট্রানজেকশন আইডি দিন</h2>
+          
+          <div className="relative mb-8">
+            <Input 
+              value={trxId}
+              onChange={(e) => setTrxId(e.target.value)}
+              placeholder="ট্রানজেকশন আইডি দিন"
+              className="bg-white border-none text-gray-700 placeholder:text-gray-400 h-12 rounded-xl text-center text-sm font-bold focus-visible:ring-0 shadow-inner"
+            />
           </div>
 
-          {/* Store & Amount Row */}
-          <div className="flex items-center gap-2 mb-6">
-            <div className="flex-1 flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 shadow-sm">
-               <div className="w-10 h-10 rounded-full border border-gray-50 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
-                 <Image src="https://picsum.photos/seed/store/80" width={40} height={40} alt="store" className="object-cover" />
-               </div>
-               <div className="flex flex-col min-w-0">
-                 <h3 className="font-bold text-gray-600 text-[13px] truncate">BD Esports Arena</h3>
-                 <p className="text-[10px] text-gray-400 truncate">ইনভয়েস আইডিঃ <span className="font-bold text-gray-500">3DH7TG934476</span></p>
-               </div>
+          <div className="space-y-4 text-[12px] font-medium leading-relaxed">
+            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
+              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+              <p>
+                {config.dial} ডায়াল করে আপনার {config.name.toUpperCase()} মোবাইল মেনুতে যান অথবা {config.name.toUpperCase()} অ্যাপে যান।
+              </p>
             </div>
-            <div className="px-5 py-3 bg-white border border-gray-100 rounded-xl shadow-sm flex items-center justify-center shrink-0">
-              <span className="text-lg font-bold text-gray-600">৳145.00</span>
-            </div>
-          </div>
-
-          {/* Instruction Box (Rounded All Corners, Smaller Size) */}
-          <div className={`rounded-[20px] p-6 ${config.boxBg} text-white shadow-lg mb-6`}>
-            <h2 className="text-[14px] font-bold mb-4 text-center">ট্রানজেকশন আইডি দিন</h2>
             
-            <div className="relative mb-6">
-              <Input 
-                value={trxId}
-                onChange={(e) => setTrxId(e.target.value)}
-                placeholder="ট্রানজেকশন আইডি দিন"
-                className="bg-white border-none text-gray-800 placeholder:text-gray-300 h-11 rounded-lg text-center text-sm focus-visible:ring-2 focus-visible:ring-white/20"
-              />
+            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
+              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+              <p>"<span className="text-yellow-400 font-bold">Send Money</span>" -এ ক্লিক করুন।</p>
             </div>
 
-            <div className="space-y-3 text-[11px] font-medium leading-relaxed">
-              <div className="flex items-start gap-2 pb-2 border-b border-white/10">
-                <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-                <p>
-                  {config.dial} ডায়াল করে আপনার {config.name.toUpperCase()} মোবাইল মেনুতে যান অথবা {config.name.toUpperCase()} অ্যাপে যান।
-                </p>
+            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
+              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+              <div className="flex flex-col gap-2">
+                <p>প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-yellow-400 font-bold text-base tracking-wide">{config.number}</span></p>
+                <button 
+                  onClick={copyNumber} 
+                  className="flex items-center w-fit gap-1.5 bg-black/20 hover:bg-black/30 px-3 py-1 rounded-lg transition-colors border border-white/10"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span className="text-[10px] font-bold uppercase">Copy</span>
+                </button>
               </div>
-              
-              <div className="flex items-start gap-2 pb-2 border-b border-white/10">
-                <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-                <p>"<span className="text-yellow-400 font-bold">Send Money</span>" - এ ক্লিক করুন।</p>
-              </div>
+            </div>
 
-              <div className="flex items-start gap-2 pb-2 border-b border-white/10">
-                <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-                <div className="flex flex-col gap-1.5">
-                  <p>প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ</p>
-                  <div className="flex items-center gap-3">
-                    <span className="text-yellow-400 font-bold text-base">{config.number}</span>
-                    <button 
-                      onClick={copyNumber} 
-                      className="flex items-center gap-1 bg-black/20 hover:bg-black/30 px-2 py-0.5 rounded transition-colors border border-white/10"
-                    >
-                      {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                      <span className="text-[9px] font-bold">Copy</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
+              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+              <p>টাকার পরিমাণঃ <span className="text-yellow-400 font-bold">৳145.00</span></p>
+            </div>
 
-              <div className="flex items-start gap-2 pb-2 border-b border-white/10">
-                <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-                <p>টাকার পরিমাণঃ <span className="text-yellow-400 font-bold">৳145.00</span></p>
-              </div>
+            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
+              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+              <p>নিশ্চিত করতে এখন আপনার {config.name.toUpperCase()} মোবাইল মেনু পিন লিখুন।</p>
+            </div>
 
-              <div className="flex items-start gap-2">
-                <span className="mt-1.5 w-1 h-1 bg-white rounded-full shrink-0" />
-                <p>নিশ্চিত করতে এখন আপনার {config.name.toUpperCase()} মোবাইল মেনু পিন লিখুন।</p>
-              </div>
+            <div className="flex items-start gap-3 pb-3 border-b border-white/20">
+              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+              <p>সবকিছু ঠিক থাকলে, আপনি {config.name.toUpperCase()} থেকে একটি নিশ্চিতকরণ বার্তা পাবেন।</p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-2 w-1.5 h-1.5 bg-white rounded-full shrink-0" />
+              <p>এখন উপরের বক্সে আপনার <span className="text-yellow-400 font-bold">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-400 font-bold">VERIFY</span> বাটনে ক্লিক করুন।</p>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Verify Button (Inside Card, Sticky to bottom of content) */}
+      {/* 6. Fixed Bottom Verify Button */}
+      <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
+        <div className="w-full max-w-[420px] pointer-events-auto">
           <Button 
-            className={`w-full h-12 rounded-xl text-white font-bold text-sm transition-all active:scale-[0.98] ${config.boxBg} hover:brightness-110 shadow-md`}
+            className={`w-full h-[64px] rounded-t-[24px] rounded-b-none text-white font-bold text-base tracking-widest transition-all active:scale-[0.98] ${config.boxBg} hover:brightness-110 shadow-[0_-8px_20px_-4px_rgba(0,0,0,0.1)]`}
           >
             VERIFY
           </Button>
