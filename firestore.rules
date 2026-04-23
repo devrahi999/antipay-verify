@@ -2,6 +2,29 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // --- AntiPay Gateway Rules (At Top for Priority) ---
+
+    match /api_keys/{keyId} {
+      // API routes use client SDK on server, needs broad read
+      allow read: if true; 
+      allow write: if false; // Only via console/admin
+    }
+
+    match /payment_sessions/{sessionId} {
+      // Public needs to read session info to show amount/details on checkout
+      allow get: if true;
+      allow list: if false;
+      // API routes create/update sessions
+      allow create, update: if true;
+    }
+
+    match /transactions/{trxId} {
+      // Server-side verification needs to read/write
+      allow read, write: if true;
+    }
+
+    // --- Existing System Rules ---
+
     function isSignedIn() {
       return request.auth != null;
     }
@@ -57,27 +80,6 @@ service cloud.firestore {
 
     match /{allPaths=**}/paymentSessions/{sessionId} {
       allow read: if isAdmin();
-    }
-
-    // --- AntiPay Gateway Rules ---
-
-    match /api_keys/{keyId} {
-      // API routes use unauthenticated client SDK on server
-      allow read: if true; 
-      allow write: if isAdmin();
-    }
-
-    match /payment_sessions/{sessionId} {
-      // Public needs to read session info to show amount/details on checkout
-      allow get: if true;
-      allow list: if isAdmin();
-      // Server-side API creates/updates sessions
-      allow create, update: if true;
-    }
-
-    match /transactions/{trxId} {
-      // Securely handled via API, but needs broad access for prototype logic
-      allow read, write: if true;
     }
   }
 }
