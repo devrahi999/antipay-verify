@@ -73,7 +73,7 @@ export default function MethodPage() {
     >
       <div className="w-full max-w-[420px] flex flex-col gap-4 z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 px-3">
         
-        {/* Top Bar - More compact height with larger icons */}
+        {/* Top Bar */}
         <div className="mt-4 h-[50px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-between px-4 border border-gray-100/50">
           <Button 
             variant="ghost" 
@@ -81,7 +81,7 @@ export default function MethodPage() {
             className="w-10 h-10 hover:bg-gray-50 text-gray-500"
             onClick={() => router.back()}
           >
-            <ChevronLeft className="w-7 h-7" />
+            <ChevronLeft className="w-8 h-8" />
           </Button>
           <Button 
             variant="ghost" 
@@ -89,7 +89,7 @@ export default function MethodPage() {
             className="w-10 h-10 hover:bg-gray-50 text-gray-500"
             onClick={() => router.push(`/s/${sessionId}`)}
           >
-            <X className="w-7 h-7" />
+            <X className="w-8 h-8" />
           </Button>
         </div>
 
@@ -119,7 +119,7 @@ export default function MethodPage() {
         </div>
 
         {/* Instruction & Input Box */}
-        <div className={`w-full rounded-lg p-5 ${config.boxBg} text-white shadow-lg mb-4`}>
+        <div className="w-full rounded-lg p-5 bg-[#A7E693] text-gray-800 shadow-lg mb-4">
           <h2 className="text-[12px] font-black mb-4 text-center uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           
           <div className="relative mb-5">
@@ -127,30 +127,30 @@ export default function MethodPage() {
               value={trxId}
               onChange={(e) => setTrxId(e.target.value)}
               placeholder="ট্রানজেকশন আইডি দিন"
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-10 rounded-lg text-center text-xs font-bold focus-visible:ring-0 backdrop-blur-sm"
+              className="bg-white border-transparent text-gray-900 placeholder:text-gray-400 h-10 rounded-lg text-center text-xs font-bold focus-visible:ring-0 shadow-sm"
             />
           </div>
 
           <div className="space-y-4 text-[10px] leading-relaxed">
             <div className="flex items-start gap-2.5">
-              <span className="mt-1 w-1.5 h-1.5 bg-white/40 rounded-full shrink-0" />
+              <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
               <p className="font-bold">
                 {config.dial} ডায়াল করে আপনার {config.name.toUpperCase()} মোবাইল মেনুতে যান অথবা {config.name.toUpperCase()} অ্যাপে যান।
               </p>
             </div>
             
             <div className="flex items-start gap-2.5">
-              <span className="mt-1 w-1.5 h-1.5 bg-white/40 rounded-full shrink-0" />
-              <p className="font-bold">"<span className="text-yellow-300">Send Money</span>" -এ ক্লিক করুন।</p>
+              <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
+              <p className="font-bold">"<span className="text-black underline underline-offset-2">Send Money</span>" -এ ক্লিক করুন।</p>
             </div>
 
             <div className="flex items-start gap-2.5">
-              <span className="mt-1 w-1.5 h-1.5 bg-white/40 rounded-full shrink-0" />
+              <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
               <div className="flex flex-col gap-2">
-                <p className="font-bold">প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-yellow-300 text-xs tracking-widest">{config.number}</span></p>
+                <p className="font-bold">প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ <span className="text-black text-xs tracking-widest bg-white/50 px-1.5 py-0.5 rounded">{config.number}</span></p>
                 <button 
                   onClick={copyNumber} 
-                  className="flex items-center w-fit gap-1.5 bg-white/10 hover:bg-white/20 px-2 py-1 rounded transition-colors border border-white/10"
+                  className="flex items-center w-fit gap-1.5 bg-black/5 hover:bg-black/10 px-2 py-1 rounded transition-colors border border-black/5"
                 >
                   {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   <span className="text-[9px] font-black uppercase">Copy Number</span>
@@ -159,35 +159,35 @@ export default function MethodPage() {
             </div>
 
             <div className="flex items-start gap-2.5">
-              <span className="mt-1 w-1.5 h-1.5 bg-white/40 rounded-full shrink-0" />
-              <p className="font-bold">টাকার পরিমাণঃ <span className="text-yellow-300">৳145.00</span></p>
+              <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
+              <p className="font-bold">টাকার পরিমাণঃ <span className="text-black">৳145.00</span></p>
             </div>
 
             <div className="flex items-start gap-2.5">
-              <span className="mt-1 w-1.5 h-1.5 bg-white/40 rounded-full shrink-0" />
+              <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
               <p className="font-bold">নিশ্চিত করতে এখন আপনার {config.name.toUpperCase()} মোবাইল মেনু পিন লিখুন।</p>
             </div>
 
             <div className="flex items-start gap-2.5">
-              <span className="mt-1 w-1.5 h-1.5 bg-white/40 rounded-full shrink-0" />
+              <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
               <p className="font-bold">সবকিছু ঠিক থাকলে, আপনি {config.name.toUpperCase()} থেকে একটি নিশ্চিতকরণ বার্তা পাবেন।</p>
             </div>
 
             <div className="flex items-start gap-2.5">
-              <span className="mt-1 w-1.5 h-1.5 bg-white/40 rounded-full shrink-0" />
-              <p className="font-bold">এখন উপরের বক্সে আপনার <span className="text-yellow-300">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-300">VERIFY</span> বাটনে ক্লিক করুন।</p>
+              <span className="mt-1 w-1.5 h-1.5 bg-black/20 rounded-full shrink-0" />
+              <p className="font-bold">এখন উপরের বক্সে আপনার <span className="text-black font-black">Transaction ID</span> দিন এবং নিচের <span className="text-black font-black">VERIFY</span> বাটনে ক্লিক করুন।</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Verify Button - Flushed */}
+      {/* Verify Button - Flushed & Rounded Top */}
       <div className="fixed bottom-0 left-0 right-0 flex justify-center z-50 pointer-events-none">
         <div className="w-full max-w-[420px] pointer-events-auto">
           <Button 
-            className={`w-full h-[60px] rounded-none text-white font-black text-xs tracking-[0.25em] transition-all active:scale-[0.99] ${config.boxBg} hover:brightness-105 shadow-2xl`}
+            className={`w-full h-[52px] rounded-t-xl rounded-b-none text-white font-black text-sm tracking-[0.25em] transition-all active:scale-[0.99] ${config.boxBg} hover:brightness-105 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]`}
           >
-            VERIFY TRANSACTION
+            VERIFY
           </Button>
         </div>
       </div>
