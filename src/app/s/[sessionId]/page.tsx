@@ -33,21 +33,21 @@ export default function MethodSelect() {
       <div className="w-full sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 overflow-hidden">
         
         {/* Top Bar - Solid with border for mobile, integrated for desktop */}
-        <div className="mx-5 sm:mx-0 mt-4 sm:mt-0 h-12 bg-white rounded-lg sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
+        <div className="mx-5 sm:mx-0 mt-4 sm:mt-0 h-10 bg-white rounded-lg sm:rounded-none shadow-sm sm:shadow-none flex items-center justify-between px-4 border border-gray-100 sm:border-b sm:border-gray-100">
           <Button 
             variant="ghost" 
             size="icon" 
             className="w-9 h-9 hover:bg-gray-50 text-gray-700"
             onClick={() => router.push('/')}
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-6 h-6" />
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
             className="w-9 h-9 hover:bg-gray-50 text-gray-700"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </Button>
         </div>
 
@@ -102,7 +102,7 @@ export default function MethodSelect() {
 
         {/* Bottom Amount Bar - Fixed at bottom for mobile, integrated for desktop */}
         <div className="fixed sm:static bottom-0 left-0 right-0 flex justify-center z-50">
-          <div className="w-full sm:max-w-none h-16 sm:h-12 bg-[#F0FDF4] flex items-center justify-center border-t border-green-100 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] sm:shadow-none">
+          <div className="w-full sm:max-w-none h-16 sm:h-12 bg-[#F0FDF4] flex items-center justify-center border-t border-green-100 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] sm:shadow-none rounded-t-xl sm:rounded-none">
             <span className="text-[#10853D] font-black text-xs uppercase tracking-[0.2em]">Pay ৳145.00</span>
           </div>
         </div>
