@@ -27,6 +27,7 @@
         "expiresAt": { "type": "string", "format": "date-time" },
         "method": { "type": "string" },
         "trxId": { "type": "string" },
+        "sender": { "type": "string", "description": "The mobile number of the sender" },
         "val_id": { "type": "string" }
       }
     },
@@ -39,6 +40,7 @@
         "userId": { "type": "string" },
         "amount": { "type": "number" },
         "source": { "type": "string" },
+        "sender": { "type": "string" },
         "status": { "type": "string", "enum": ["unused", "used"] },
         "createdAt": { "type": "string", "format": "date-time" }
       }
@@ -51,7 +53,7 @@
   },
   "firestore": {
     "api_keys/{apiKeyId}": { "schema": "ApiKey", "description": "Collection of API keys" },
-    "payment_sessions/{sessionId}": { "schema": "PaymentSession", "description": "Active payment sessions" },
+    "payment_sessions/{userId}/sessions/{sessionId}": { "schema": "PaymentSession", "description": "Active payment sessions" },
     "transactions/{trxId}": { "schema": "Transaction", "description": "MFS transaction logs" }
   }
 }

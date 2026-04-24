@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
 import { doc, runTransaction, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
@@ -77,6 +78,9 @@ export async function POST(req: NextRequest) {
       if (Math.abs(trxAmount - sessionAmount) > 0.01) throw new Error('Amount mismatch');
       if (trxData.userId !== userIdFromStore) throw new Error('User mismatch');
 
+      // Get sender number from transaction document
+      const senderNumber = trxData.sender || trxData.source || 'N/A';
+
       // Execute updates
       transaction.update(trxRef, { status: 'used' });
       transaction.update(sessionRef, {
@@ -84,6 +88,7 @@ export async function POST(req: NextRequest) {
         isUsed: true,
         method: method,
         trxId: trxId,
+        sender: senderNumber, // Adding sender number to the session
         verifiedAt: new Date().toISOString()
       });
 
@@ -92,13 +97,14 @@ export async function POST(req: NextRequest) {
         callWebhook(sessionData.webhook_url, {
           status: 'verified',
           trxId: trxId,
+          sender: senderNumber,
           amount: sessionAmount,
           sessionId: sessionId,
           val_id: sessionData.val_id
         });
       }
 
-      return { status: 'verified', trxId, amount: sessionAmount };
+      return { status: 'verified', trxId, amount: sessionAmount, sender: senderNumber };
     });
 
     return NextResponse.json(result);
