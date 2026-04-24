@@ -88,23 +88,22 @@ export async function POST(req: NextRequest) {
         isUsed: true,
         method: method,
         trxId: trxId,
-        sender: senderNumber, // Adding sender number to the session
+        sender: senderNumber, // Adding sender number to the session in Firestore
         verifiedAt: new Date().toISOString()
       });
 
-      // Prepare Webhook Payload
+      // Prepare Webhook Payload (Sender number is NOT included here)
       if (sessionData.webhook_url) {
         callWebhook(sessionData.webhook_url, {
           status: 'verified',
           trxId: trxId,
-          sender: senderNumber,
           amount: sessionAmount,
           sessionId: sessionId,
           val_id: sessionData.val_id
         });
       }
 
-      return { status: 'verified', trxId, amount: sessionAmount, sender: senderNumber };
+      return { status: 'verified', trxId, amount: sessionAmount };
     });
 
     return NextResponse.json(result);
