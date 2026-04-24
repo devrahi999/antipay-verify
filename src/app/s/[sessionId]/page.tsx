@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -42,7 +41,17 @@ export default function MethodSelect() {
     async function fetchData() {
       if (!sessionId) return;
       try {
-        const docRef = doc(db, "payment_sessions", sessionId as string);
+        // Parse userId from encoded sessionId (format: userId_random)
+        const sid = sessionId as string;
+        const userId = sid.substring(0, sid.lastIndexOf('_'));
+        
+        if (!userId) {
+            setNotFound(true);
+            return;
+        }
+
+        // Path: payment_sessions/{userId}/sessions/{sessionId}
+        const docRef = doc(db, "payment_sessions", userId, "sessions", sid);
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
@@ -77,13 +86,13 @@ export default function MethodSelect() {
   };
 
   const handleCancel = async () => {
-    if (!sessionId || isCancelling) return;
+    if (!sessionId || isCancelling || !session?.userId) return;
     setIsCancelling(true);
     try {
       const res = await fetch('/api/v1/cancel', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId })
+        body: JSON.stringify({ sessionId, userId: session.userId })
       });
       if (res.ok) {
         router.push(`/s/${sessionId}/cancel`);
@@ -165,7 +174,7 @@ export default function MethodSelect() {
             <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
               {store?.supportPhone && <a href={`tel:${store.supportPhone}`} className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><PhoneCall className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">কল করুন</p></a>}
               {store?.whatsappNumber && <a href={`https://wa.me/${store.whatsappNumber.replace(/\+/g, '')}`} target="_blank" className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><MessageCircle className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">হোয়াটসঅ্যাপ</p></a>}
-              {store?.supportEmail && <a href={`mailto:${store.supportEmail}`} className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><Mail className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">イমেইল করুন</p></a>}
+              {store?.supportEmail && <a href={`mailto:${store.supportEmail}`} className="w-full bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-400 transition-all"><div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-[#10853D]"><Mail className="w-5 h-5" /></div><p className="text-[10px] font-bold text-gray-600">ইমেইল করুন</p></a>}
             </div>
           )}
         </div>

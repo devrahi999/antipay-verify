@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -47,7 +46,15 @@ export default function MethodPage() {
     async function fetchData() {
       if (!sessionId) return;
       try {
-        const docRef = doc(db, "payment_sessions", sessionId as string);
+        const sid = sessionId as string;
+        const userId = sid.substring(0, sid.lastIndexOf('_'));
+        
+        if (!userId) {
+            setNotFound(true);
+            return;
+        }
+
+        const docRef = doc(db, "payment_sessions", userId, "sessions", sid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -63,13 +70,13 @@ export default function MethodPage() {
   }, [sessionId, db]);
 
   const handleCancel = async () => {
-    if (!sessionId || isCancelling) return;
+    if (!sessionId || isCancelling || !session?.userId) return;
     setIsCancelling(true);
     try {
       const res = await fetch('/api/v1/cancel', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId })
+        body: JSON.stringify({ sessionId, userId: session.userId })
       });
       if (res.ok) router.push(`/s/${sessionId}/cancel`);
     } catch (e) { console.error(e); } finally { setIsCancelling(false); }
@@ -122,19 +129,16 @@ export default function MethodPage() {
     <div className="min-h-screen flex flex-col items-center justify-start sm:justify-center p-0 sm:p-4 relative overflow-x-hidden" style={{ backgroundColor: '#eef2f6' }}>
       <div className="w-full h-full sm:h-auto sm:max-w-[420px] bg-transparent sm:bg-white sm:rounded-xl sm:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border-0 sm:border border-gray-100/50 flex flex-col z-10 animate-in fade-in slide-in-from-bottom-2 duration-500 min-h-screen sm:min-h-0 pb-24 sm:pb-0">
         
-        {/* Top Header */}
         <div className="mx-5 mt-4 sm:mx-0 sm:mt-0 h-10 flex items-center justify-between px-4 sm:border-b border-gray-200 bg-white rounded-xl sm:rounded-none shadow-sm sm:shadow-none border border-gray-200 sm:border-0">
           <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => router.back()}><ChevronLeft className="w-6 h-6" /></Button>
           <Button variant="ghost" size="icon" disabled={isCancelling} className="w-7 h-7" onClick={() => setShowCancelAlert(true)}><X className="w-6 h-6" /></Button>
         </div>
 
-        {/* Method Logo */}
         <div className="flex flex-col items-center justify-center py-5">
           <div className="relative h-12 w-32"><img src={config.logo} alt={config.name} className="h-full w-full object-contain" /></div>
           <span className="text-[9px] font-bold text-gray-400 tracking-[0.2em] mt-1 uppercase">Official Payment Partner</span>
         </div>
 
-        {/* Merchant Card */}
         <div className="px-5 mb-5">
           <div className="bg-white rounded-lg border border-gray-100 p-3 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
@@ -150,7 +154,6 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Instructions Container - Fixed Soft Green Background */}
         <div className="mx-5 mb-6 rounded-xl overflow-hidden shadow-md border border-black/5 flex flex-col bg-[#10853D]">
           <div className="bg-white/10 py-3 text-center border-b border-white/10">
             <h2 className="text-white text-[13px] font-black uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
@@ -219,7 +222,6 @@ export default function MethodPage() {
           </div>
         </div>
 
-        {/* Footer Verify Button */}
         <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white sm:bg-transparent px-0 sm:px-5 pb-0 sm:pb-5">
           <Button disabled={isVerifying} onClick={handleVerify} className="w-full h-12 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.2em] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0">{isVerifying ? "VERIFYING..." : "VERIFY"}</Button>
         </div>
@@ -227,7 +229,6 @@ export default function MethodPage() {
 
       <div className="hidden sm:block mt-6 text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">Secured by AntiPay Gateway</div>
 
-      {/* Cancel Confirmation Dialog */}
       <AlertDialog open={showCancelAlert} onOpenChange={setShowCancelAlert}>
         <AlertDialogContent className="max-w-[320px] rounded-2xl border-0 p-6">
           <AlertDialogHeader className="items-center text-center">

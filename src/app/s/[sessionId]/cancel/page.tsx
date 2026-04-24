@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -21,7 +20,15 @@ export default function CancelPage() {
     async function fetchData() {
       if (!sessionId) return;
       try {
-        const docRef = doc(db, "payment_sessions", sessionId as string);
+        const sid = sessionId as string;
+        const userId = sid.substring(0, sid.lastIndexOf('_'));
+        
+        if (!userId) {
+            setLoading(false);
+            return;
+        }
+
+        const docRef = doc(db, "payment_sessions", userId, "sessions", sid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
