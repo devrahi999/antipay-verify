@@ -53,7 +53,8 @@ export async function POST(req: NextRequest) {
 
     // 3. Start Atomic Transaction
     const result = await runTransaction(db, async (transaction) => {
-      const sessionRef = doc(db, 'payment_sessions', sessionId);
+      // Path: payment_sessions/{userId}/sessions/{sessionId}
+      const sessionRef = doc(db, 'payment_sessions', userIdFromStore, 'sessions', sessionId);
       const trxRef = doc(db, 'transactions', trxId);
 
       const sessionSnap = await transaction.get(sessionRef);

@@ -16,11 +16,14 @@ async function callWebhook(url: string, payload: any) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { sessionId } = await req.json();
-    if (!sessionId) return NextResponse.json({ status: false, message: 'Missing sessionId' }, { status: 400 });
+    const { sessionId, userId } = await req.json();
+    if (!sessionId || !userId) {
+      return NextResponse.json({ status: false, message: 'Missing sessionId or userId' }, { status: 400 });
+    }
 
     const { db } = initializeFirebase();
-    const sessionRef = doc(db, 'payment_sessions', sessionId);
+    // Path: payment_sessions/{userId}/sessions/{sessionId}
+    const sessionRef = doc(db, 'payment_sessions', userId, 'sessions', sessionId);
     const sessionSnap = await getDoc(sessionRef);
 
     if (!sessionSnap.exists()) return NextResponse.json({ status: false, message: 'Session not found' }, { status: 404 });

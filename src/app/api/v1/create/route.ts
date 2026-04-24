@@ -50,12 +50,13 @@ export async function POST(req: NextRequest) {
       webhook_url: body.webhook_url || null,
     };
 
-    await setDoc(doc(db, 'payment_sessions', sessionId), sessionData);
+    // Subcollection path: payment_sessions/{userId}/sessions/{sessionId}
+    await setDoc(doc(db, 'payment_sessions', userId, 'sessions', sessionId), sessionData);
 
     // 4. Return
     const host = req.headers.get('host');
     const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const payment_url = `${protocol}://${host}/s/${sessionId}`;
+    const payment_url = `${protocol}://${host}/s/${userId}/${sessionId}`;
 
     return NextResponse.json({
       status: true,
