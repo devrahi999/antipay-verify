@@ -9,49 +9,75 @@ function parseDate(val: any): Date {
   return new Date(0);
 }
 
+// ✅ Webhook with retry + await (critical fix)
 async function callWebhook(url: string, payload: any) {
-  try {
-    // Non-blocking fire-and-forget for speed, but awaited here to ensure delivery
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).catch(e => console.error('Webhook fetch error:', e));
-  } catch (e) {
-    console.error('Webhook failed:', e);
+  for (let i = 0; i < 3; i++) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+      console.log("🚀 Webhook attempt:", i + 1, res.status, text);
+
+      if (res.ok) {
+        console.log("✅ Webhook delivered successfully");
+        return;
+      }
+
+    } catch (e) {
+      console.error("❌ Webhook error attempt:", i + 1, e);
+    }
+
+    // retry delay
+    await new Promise(r => setTimeout(r, 2000));
   }
+
+  console.error("🔥 Webhook failed after retries");
 }
 
 export async function POST(req: NextRequest) {
   try {
     const apiKeyFromHeader = req.headers.get('x-api-key');
+
     if (!apiKeyFromHeader) {
-      return NextResponse.json({ status: false, message: 'Missing API Key' }, { status: 401 });
+      return NextResponse.json(
+        { status: false, message: 'Missing API Key' },
+        { status: 401 }
+      );
     }
 
     const { db } = initializeFirebase();
 
-    // 1. Fast API Key Validation
+    // ✅ Validate API key (fast lookup)
     const storeSnap = await getDoc(doc(db, 'stores', apiKeyFromHeader));
 
     if (!storeSnap.exists() || storeSnap.data().status !== 'active') {
-      return NextResponse.json({ status: false, message: 'Invalid API Key' }, { status: 401 });
+      return NextResponse.json(
+        { status: false, message: 'Invalid API Key' },
+        { status: 401 }
+      );
     }
 
     const userIdFromStore = storeSnap.data().userId;
 
-    // 2. Validate Body
+    // ✅ Parse request body
     const { sessionId, trxId: rawTrxId, method } = await req.json();
 
     if (!sessionId || !rawTrxId || !method) {
-      return NextResponse.json({ status: false, message: 'Missing parameters' }, { status: 400 });
+      return NextResponse.json(
+        { status: false, message: 'Missing parameters' },
+        { status: 400 }
+      );
     }
 
     const trxId = rawTrxId.trim().toUpperCase();
 
-    // 3. Start Atomic Transaction (Optimized: No external calls inside)
     let webhookInfo: any = null;
 
+    // ✅ Firestore Transaction
     const result = await runTransaction(db, async (transaction) => {
       const sessionRef = doc(db, 'payment_sessions', userIdFromStore, 'sessions', sessionId);
       const trxRef = doc(db, 'transactions', trxId);
@@ -60,22 +86,28 @@ export async function POST(req: NextRequest) {
       const trxSnap = await transaction.get(trxRef);
 
       if (!sessionSnap.exists()) throw new Error('Invalid session');
+
       const sessionData = sessionSnap.data();
-      
+
       if (sessionData.isUsed === true) throw new Error('Already used');
       if (new Date() > parseDate(sessionData.expiresAt)) throw new Error('Session expired');
       if (sessionData.apiKey !== apiKeyFromHeader) throw new Error('API Key mismatch');
 
       if (!trxSnap.exists()) throw new Error('Transaction not found');
+
       const trxData = trxSnap.data();
+
       if (trxData.status !== 'unused') throw new Error('Already used');
-      
+
       const sessionAmount = Number(sessionData.amount);
       const trxAmount = Number(trxData.amount);
+
       if (Math.abs(trxAmount - sessionAmount) > 0.01) throw new Error('Amount mismatch');
       if (trxData.userId !== userIdFromStore) throw new Error('User mismatch');
 
+      // ✅ Update transaction + session
       transaction.update(trxRef, { status: 'used' });
+
       transaction.update(sessionRef, {
         status: 'verified',
         isUsed: true,
@@ -85,7 +117,7 @@ export async function POST(req: NextRequest) {
         verifiedAt: new Date().toISOString()
       });
 
-      // Collect webhook info to call after transaction
+      // ✅ Prepare webhook data
       if (sessionData.webhook_url) {
         webhookInfo = {
           url: sessionData.webhook_url,
@@ -102,14 +134,23 @@ export async function POST(req: NextRequest) {
       return { status: 'verified', trxId, amount: sessionAmount };
     });
 
-    // 4. Call Webhook asynchronously after success (Does not block main response)
+    // 🔥 CRITICAL FIX: await webhook
     if (webhookInfo) {
-      callWebhook(webhookInfo.url, webhookInfo.payload);
+      console.log("📡 Sending webhook to:", webhookInfo.url);
+      await callWebhook(webhookInfo.url, webhookInfo.payload);
     }
 
     return NextResponse.json(result);
 
   } catch (error: any) {
-    return NextResponse.json({ status: false, message: error.message || 'Verification failed' }, { status: 400 });
+    console.error("❌ VERIFY ERROR:", error);
+
+    return NextResponse.json(
+      {
+        status: false,
+        message: error.message || 'Verification failed'
+      },
+      { status: 400 }
+    );
   }
 }
