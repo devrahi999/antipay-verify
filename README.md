@@ -2,18 +2,6 @@
 
 A minimalist and secure payment gateway integration for mobile financial services (bKash, Nagad, etc.) in Bangladesh.
 
-## 🚀 Getting Started
-
-To push this project to your GitHub repository, run the following commands in your terminal:
-
-```bash
-git init
-git add .
-git commit -m "first commit: full antipay gateway implementation"
-git branch -M main
-git remote add origin https://github.com/devrahi999/antipay-verify.git
-git push -u origin main
-```
 
 ## 🛠 Features
 - **Dynamic Payment Methods**: Fetches merchant-specific numbers and active methods from Firestore.
@@ -46,22 +34,5 @@ git push -u origin main
   "trxId": "TRX123456",
   "method": "bkash"
 }
-```
-
-### 3. Cancel Payment
-**Endpoint:** `POST /api/v1/cancel`  
-**Body:**
-```json
-{
-  "sessionId": "userId_randomStr",
-  "userId": "merchant_id"
-}
-```
-
-## 🗄 Firestore Structure
-- `payment_sessions/{userId}/sessions/{sessionId}`: Stores payment state and results.
-- `stores/{apiKeyId}`: Stores merchant settings, active methods, and website URLs.
-- `transactions/{trxId}`: Raw logs from MFS providers to match against.
-
 ---
 **Secured by AntiPay Gateway**
