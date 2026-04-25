@@ -34,5 +34,7 @@ A minimalist and secure payment gateway integration for mobile financial service
   "trxId": "TRX123456",
   "method": "bkash"
 }
+```
 ---
+
 **Secured by AntiPay Gateway**
