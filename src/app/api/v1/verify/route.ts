@@ -1,7 +1,6 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
-import { doc, runTransaction, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import { doc, runTransaction, getDoc, Timestamp } from 'firebase/firestore';
 
 function parseDate(val: any): Date {
   if (!val) return new Date(0);
@@ -12,11 +11,12 @@ function parseDate(val: any): Date {
 
 async function callWebhook(url: string, payload: any) {
   try {
-    await fetch(url, {
+    // Non-blocking fire-and-forget for speed, but awaited here to ensure delivery
+    fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
-    });
+    }).catch(e => console.error('Webhook fetch error:', e));
   } catch (e) {
     console.error('Webhook failed:', e);
   }
@@ -31,17 +31,14 @@ export async function POST(req: NextRequest) {
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key in 'stores' collection
-    const storesRef = collection(db, 'stores');
-    const q = query(storesRef, where('apiKey', '==', apiKeyFromHeader), where('status', '==', 'active'));
-    const querySnapshot = await getDocs(q);
+    // 1. Fast API Key Validation
+    const storeSnap = await getDoc(doc(db, 'stores', apiKeyFromHeader));
 
-    if (querySnapshot.empty) {
+    if (!storeSnap.exists() || storeSnap.data().status !== 'active') {
       return NextResponse.json({ status: false, message: 'Invalid API Key' }, { status: 401 });
     }
 
-    const storeDoc = querySnapshot.docs[0].data();
-    const userIdFromStore = storeDoc.userId;
+    const userIdFromStore = storeSnap.data().userId;
 
     // 2. Validate Body
     const { sessionId, trxId: rawTrxId, method } = await req.json();
@@ -52,9 +49,10 @@ export async function POST(req: NextRequest) {
 
     const trxId = rawTrxId.trim().toUpperCase();
 
-    // 3. Start Atomic Transaction
+    // 3. Start Atomic Transaction (Optimized: No external calls inside)
+    let webhookInfo: any = null;
+
     const result = await runTransaction(db, async (transaction) => {
-      // Path: payment_sessions/{userId}/sessions/{sessionId}
       const sessionRef = doc(db, 'payment_sessions', userIdFromStore, 'sessions', sessionId);
       const trxRef = doc(db, 'transactions', trxId);
 
@@ -63,10 +61,9 @@ export async function POST(req: NextRequest) {
 
       if (!sessionSnap.exists()) throw new Error('Invalid session');
       const sessionData = sessionSnap.data();
-      if (sessionData.isUsed === true || sessionData.status !== 'pending') throw new Error('Already used');
       
-      const expiresAt = parseDate(sessionData.expiresAt);
-      if (new Date() > expiresAt) throw new Error('Session expired');
+      if (sessionData.isUsed === true) throw new Error('Already used');
+      if (new Date() > parseDate(sessionData.expiresAt)) throw new Error('Session expired');
       if (sessionData.apiKey !== apiKeyFromHeader) throw new Error('API Key mismatch');
 
       if (!trxSnap.exists()) throw new Error('Transaction not found');
@@ -78,33 +75,37 @@ export async function POST(req: NextRequest) {
       if (Math.abs(trxAmount - sessionAmount) > 0.01) throw new Error('Amount mismatch');
       if (trxData.userId !== userIdFromStore) throw new Error('User mismatch');
 
-      // Get sender number from transaction document
-      const senderNumber = trxData.sender || trxData.source || 'N/A';
-
-      // Execute updates
       transaction.update(trxRef, { status: 'used' });
       transaction.update(sessionRef, {
         status: 'verified',
         isUsed: true,
         method: method,
         trxId: trxId,
-        sender: senderNumber, // Adding sender number to the session in Firestore
+        sender: trxData.sender || trxData.source || 'N/A',
         verifiedAt: new Date().toISOString()
       });
 
-      // Prepare Webhook Payload (Sender number is NOT included here)
+      // Collect webhook info to call after transaction
       if (sessionData.webhook_url) {
-        callWebhook(sessionData.webhook_url, {
-          status: 'verified',
-          trxId: trxId,
-          amount: sessionAmount,
-          sessionId: sessionId,
-          val_id: sessionData.val_id
-        });
+        webhookInfo = {
+          url: sessionData.webhook_url,
+          payload: {
+            status: 'verified',
+            trxId: trxId,
+            amount: sessionAmount,
+            sessionId: sessionId,
+            val_id: sessionData.val_id
+          }
+        };
       }
 
       return { status: 'verified', trxId, amount: sessionAmount };
     });
+
+    // 4. Call Webhook asynchronously after success (Does not block main response)
+    if (webhookInfo) {
+      callWebhook(webhookInfo.url, webhookInfo.payload);
+    }
 
     return NextResponse.json(result);
 

@@ -4,11 +4,11 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 async function callWebhook(url: string, payload: any) {
   try {
-    await fetch(url, {
+    fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
-    });
+    }).catch(e => console.error('Cancel Webhook fetch error:', e));
   } catch (e) {
     console.error('Cancel Webhook failed:', e);
   }
@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
     }
 
     const { db } = initializeFirebase();
-    // Path: payment_sessions/{userId}/sessions/{sessionId}
     const sessionRef = doc(db, 'payment_sessions', userId, 'sessions', sessionId);
     const sessionSnap = await getDoc(sessionRef);
 

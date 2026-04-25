@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeFirebase } from '@/firebase';
-import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,17 +11,15 @@ export async function POST(req: NextRequest) {
 
     const { db } = initializeFirebase();
 
-    // 1. Validate API Key in 'stores' collection
-    const storesRef = collection(db, 'stores');
-    const q = query(storesRef, where('apiKey', '==', apiKey), where('status', '==', 'active'));
-    const querySnapshot = await getDocs(q);
+    // 1. Optimized API Key Validation (Direct Doc Lookup is faster than query)
+    const storeSnap = await getDoc(doc(db, 'stores', apiKey));
 
-    if (querySnapshot.empty) {
+    if (!storeSnap.exists() || storeSnap.data().status !== 'active') {
       return NextResponse.json({ status: false, message: 'Invalid or inactive API Key' }, { status: 401 });
     }
 
-    const storeDoc = querySnapshot.docs[0].data();
-    const userId = storeDoc.userId;
+    const storeData = storeSnap.data();
+    const userId = storeData.userId;
 
     // 2. Validate Body
     const body = await req.json();
@@ -34,7 +32,7 @@ export async function POST(req: NextRequest) {
     // 3. Generate Smart Session ID (Encodes userId to keep URL clean)
     const randomPart = Math.random().toString(36).substring(2, 10);
     const sessionId = `${userId}_${randomPart}`;
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
     const sessionData = {
       sessionId,
@@ -44,7 +42,7 @@ export async function POST(req: NextRequest) {
       status: 'pending',
       isUsed: false,
       createdAt: new Date().toISOString(),
-      expiresAt: expiresAt.toISOString(),
+      expiresAt,
       method: null,
       trxId: null,
       val_id: body.val_id || null,
