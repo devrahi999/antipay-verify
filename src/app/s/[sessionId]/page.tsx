@@ -41,7 +41,6 @@ export default function MethodSelect() {
     async function fetchData() {
       if (!sessionId) return;
       try {
-        // Parse userId from encoded sessionId (format: userId_random)
         const sid = sessionId as string;
         const userId = sid.substring(0, sid.lastIndexOf('_'));
         
@@ -50,7 +49,6 @@ export default function MethodSelect() {
             return;
         }
 
-        // Path: payment_sessions/{userId}/sessions/{sessionId}
         const docRef = doc(db, "payment_sessions", userId, "sessions", sid);
         const docSnap = await getDoc(docRef);
         
@@ -164,7 +162,12 @@ export default function MethodSelect() {
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="bg-[#10853D]/5 py-3 text-center border-b border-[#10853D]/5"><h3 className="text-[#10853D] font-bold text-xs uppercase tracking-widest"> বিস্তারিত</h3></div>
               <div className="p-5 space-y-4">
-                <div className="flex justify-between items-center text-[10px]"><span className="text-gray-400 font-bold uppercase">ইনভয়েসঃ</span><span className="text-gray-600 font-bold break-all ml-4 text-right">{session?.sessionId}</span></div>
+                <div className="flex justify-between items-center text-[10px] gap-4">
+                  <span className="text-gray-400 font-bold uppercase shrink-0">ইনভয়েসঃ</span>
+                  <span className="text-gray-600 font-bold truncate text-right">
+                    {session?.sessionId}
+                  </span>
+                </div>
                 <div className="flex justify-between items-start text-[10px]"><span className="text-gray-400 font-bold uppercase">ডোমেইনঃ</span><span className="text-gray-600 font-bold text-right max-w-[150px]">{store?.websiteUrl || "merchant-site.com"}</span></div>
                 <div className="flex justify-between items-center text-[10px]"><span className="text-gray-400 font-bold uppercase">পরিমাণঃ</span><span className="text-gray-600 font-bold">৳{Number(session?.amount).toFixed(2)}</span></div>
               </div>

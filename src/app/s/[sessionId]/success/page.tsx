@@ -87,9 +87,20 @@ function SuccessContent() {
 
         <div className="px-5 mb-6">
           <div className="bg-gray-50 rounded-xl p-5 space-y-4 border border-gray-100">
-            <div className="flex justify-between text-[10px]"><span className="text-gray-400 font-bold uppercase">ইনভয়েস আইডিঃ</span><span className="text-gray-700 font-black">{session?.sessionId?.toUpperCase()}</span></div>
-            <div className="flex justify-between text-[10px]"><span className="text-gray-400 font-bold uppercase">টাকার পরিমাণঃ</span><span className="text-[#10853D] font-black">৳{Number(session?.amount).toFixed(2)}</span></div>
-            <div className="flex justify-between text-[10px]"><span className="text-gray-400 font-bold uppercase">ট্রানজেকশন আইডিঃ</span><span className="text-blue-600 font-black">{session?.trxId || "N/A"}</span></div>
+            <div className="flex justify-between items-center text-[10px] gap-4">
+              <span className="text-gray-400 font-bold uppercase shrink-0">ইনভয়েস আইডিঃ</span>
+              <span className="text-gray-700 font-black truncate text-right">
+                {session?.sessionId?.toUpperCase()}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-400 font-bold uppercase">টাকার পরিমাণঃ</span>
+              <span className="text-[#10853D] font-black">৳{Number(session?.amount).toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-400 font-bold uppercase">ট্রানজেকশন আইডিঃ</span>
+              <span className="text-blue-600 font-black">{session?.trxId || "N/A"}</span>
+            </div>
           </div>
         </div>
 
