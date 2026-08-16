@@ -72,6 +72,17 @@ service cloud.firestore {
       allow create: if isSignedIn();
     }
 
+    // Manual admin review requests raised from the checkout page.
+    // The gateway route runs unauthenticated (client SDK, server-side), so the
+    // submission and the settlement write have to be open — same posture as
+    // `payment_sessions` and `transactions` above. Browsing and deleting stay
+    // locked to the owning merchant.
+    match /pending_transactions/{reviewId} {
+      allow get, create, update: if true;
+      allow list: if isSignedIn() && (isAdmin() || resource.data.userId == request.auth.uid);
+      allow delete: if isSignedIn() && (isAdmin() || resource.data.userId == request.auth.uid);
+    }
+
     match /devices/{brandId} {
       allow read, write: if isSignedIn();
     }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, X, Copy, Check, User, AlertCircle } from "lucide-react";
+import { ChevronLeft, X, Copy, Check, User, AlertCircle, ShieldQuestion, CheckCircle2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -41,6 +41,16 @@ export default function MethodPage() {
   const [store, setStore] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  // Manual admin review: unlocked after 3 failed verification attempts.
+  const FAILS_BEFORE_REVIEW = 3;
+  const [failCount, setFailCount] = useState(0);
+  const [lastError, setLastError] = useState<string | null>(null);
+  const [reviewMode, setReviewMode] = useState(false);
+  const [reviewSender, setReviewSender] = useState("");
+  const [reviewTrxId, setReviewTrxId] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -96,10 +106,72 @@ export default function MethodPage() {
         toast({ variant: "success", title: "সফল!", description: "পেমেন্ট সম্পন্ন হয়েছে।" });
         setTimeout(() => router.push(`/s/${sessionId}/success`), 1500);
       } else {
-        toast({ variant: "destructive", title: "ভুল হয়েছে!", description: result.message || "ভেরিফিকেশন ব্যর্থ হয়েছে।" });
+        setFailCount((c) => c + 1);
+        setLastError(result.message || "Verification failed");
+        toast({ variant: "destructive", title:"ভুল হয়েছে!", description: result.message || "ভেরিফিকেশন ব্যর্থ হয়েছে।" });
       }
-    } catch (e) { toast({ variant: "destructive", title: "ভুল হয়েছে!", description: "সার্ভার এরর।" }); }
+    } catch (e) {
+      setFailCount((c) => c + 1);
+      setLastError("Server error");
+      toast({ variant: "destructive", title:"ভুল হয়েছে!", description: "সার্ভার এরর।" }); }
     finally { setIsVerifying(false); }
+  };
+
+  const openReview = () => {
+    // Carry over whatever the customer already typed.
+    setReviewTrxId(trxId.trim());
+    setReviewMode(true);
+  };
+
+  const handleSubmitReview = async () => {
+    const sender = reviewSender.replace(/[\s-]/g, "").trim();
+    const claimTrxId = reviewTrxId.trim();
+
+    if (!/^\+?\d{6,20}$/.test(sender)) {
+      toast({ variant: "destructive", title: "ভুল হয়েছে!", description: "সেন্ডার নম্বরটি সঠিকভাবে দিন।" });
+      return;
+    }
+    if (claimTrxId.length < 4) {
+      toast({ variant: "destructive", title: "ভুল হয়েছে!", description: "ট্রানজেকশন আইডি সঠিকভাবে দিন।" });
+      return;
+    }
+
+    setIsSubmittingReview(true);
+    try {
+      const res = await fetch('/api/v1/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': session.apiKey },
+        body: JSON.stringify({
+          sessionId,
+          trxId: claimTrxId,
+          sender,
+          method,
+          attempts: failCount,
+          lastError
+        })
+      });
+      const result = await res.json();
+      if (res.ok && result.status === 'submitted') {
+        setReviewSubmitted(true);
+
+        // A manual review NEVER calls the merchant webhook — the payment is not
+        // settled yet. The merchant fires the webhook themselves from their
+        // console when they approve it. The customer is simply sent back to the
+        // brand's own website (the `websiteUrl` on the store this API key owns).
+        const site = store?.websiteUrl;
+        if (site) {
+          const url = String(site).startsWith('http') ? String(site) : `https://${site}`;
+          setTimeout(() => { window.location.href = url; }, 1500);
+        }
+        toast({ variant: "success", title: "জমা হয়েছে!", description: "মার্চেন্ট যাচাই করে নিশ্চিত করবে।" });
+      } else {
+        toast({ variant: "destructive", title: "ভুল হয়েছে!", description: result.message || "জমা দেওয়া যায়নি।" });
+      }
+    } catch (e) {
+      toast({ variant: "destructive", title: "ভুল হয়েছে!", description: "সার্ভার এরর।" });
+    } finally {
+      setIsSubmittingReview(false);
+    }
   };
 
   if (loading) return <main className="flex min-h-screen items-center justify-center bg-[#F7F8F9]"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></main>;
@@ -156,16 +228,107 @@ export default function MethodPage() {
 
         <div className="mx-5 mb-6 rounded-xl overflow-hidden shadow-md border border-black/5 flex flex-col bg-[#10853D]">
           <div className="bg-white/10 py-3 text-center border-b border-white/10">
-            <h2 className="text-white text-[13px] font-black uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
+            {reviewMode && (
+              <h2 className="text-white text-[13px] font-black uppercase tracking-wider">
+                {reviewSubmitted ? "Review Submitted" : "Submit For Admin Review"}
+              </h2>
+            )}
+            <h2 hidden={reviewMode} className="text-white text-[13px] font-black uppercase tracking-wider">ট্রানজেকশন আইডি দিন</h2>
           </div>
           
           <div className="p-5 flex flex-col gap-4">
-            <Input 
+            {reviewSubmitted && (
+              <div className="rounded-lg bg-white p-5 flex flex-col items-center text-center gap-2 shadow-inner">
+                <CheckCircle2 className="w-10 h-10 text-[#10853D]" />
+                <p className="text-[13px] font-black text-gray-800 uppercase tracking-tight">Submitted For Review</p>
+                <p className="text-[11px] font-bold text-gray-500 leading-snug">
+                  আপনার তথ্য মার্চেন্টের কাছে পাঠানো হয়েছে। যাচাই করে পেমেন্টটি নিশ্চিত করা হবে।
+                </p>
+                <div className="mt-2 w-full rounded-md bg-gray-50 border border-gray-100 p-3 space-y-1.5">
+                  <div className="flex justify-between text-[10px]">
+                    <span className="font-bold uppercase text-gray-400">Trx ID</span>
+                    <span className="font-black text-gray-700">{reviewTrxId.trim().toUpperCase()}</span>
+                  </div>
+                  <div className="flex justify-between text-[10px]">
+                    <span className="font-bold uppercase text-gray-400">Sender</span>
+                    <span className="font-black text-gray-700">{reviewSender}</span>
+                  </div>
+                  <div className="flex justify-between text-[10px]">
+                    <span className="font-bold uppercase text-gray-400">Amount</span>
+                    <span className="font-black text-gray-700">৳{Number(session?.amount).toFixed(2)}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-amber-600 mt-1">
+                  <Clock className="w-3 h-3" /> Awaiting merchant approval
+                </div>
+                {store?.websiteUrl && (
+                  <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-gray-400">
+                    <div className="w-2.5 h-2.5 border-[1.5px] border-gray-300 border-t-gray-500 rounded-full animate-spin" />
+                    Redirecting to {store.websiteUrl}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!reviewSubmitted && reviewMode && (
+              <div className="flex flex-col gap-3.5">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-white/70">Sender Number</label>
+                  <Input
+                    value={reviewSender}
+                    onChange={(e) => setReviewSender(e.target.value)}
+                    placeholder="01XXXXXXXXX"
+                    inputMode="tel"
+                    className="bg-white border-transparent text-gray-900 h-11 rounded-lg text-center text-sm font-bold focus-visible:ring-0 shadow-inner"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-white/70">Transaction ID</label>
+                  <Input
+                    value={reviewTrxId}
+                    onChange={(e) => setReviewTrxId(e.target.value.toUpperCase())}
+                    placeholder="TRANSACTION ID"
+                    className="bg-white border-transparent text-gray-900 h-11 rounded-lg text-center text-sm font-bold uppercase focus-visible:ring-0 shadow-inner"
+                  />
+                </div>
+                <div className="rounded-lg bg-black/20 p-3.5 flex gap-2.5">
+                  <ShieldQuestion className="w-4 h-4 text-yellow-300 shrink-0 mt-0.5" />
+                  <p className="text-[10px] text-white/90 font-medium leading-relaxed">
+                    যে নম্বর থেকে টাকা পাঠিয়েছেন সেই <span className="font-black text-yellow-300">সেন্ডার নম্বর</span> ও{" "}
+                    <span className="font-black text-yellow-300">ট্রানজেকশন আইডি</span> দিয়ে সাবমিট করুন। মার্চেন্ট নিজে
+                    যাচাই করে পেমেন্টটি সম্পন্ন করবে।
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setReviewMode(false)}
+                  className="self-center text-[9px] font-black uppercase tracking-widest text-white/60 underline decoration-dotted underline-offset-4"
+                >
+                  Back to auto verify
+                </button>
+              </div>
+            )}
+
+            {!reviewSubmitted && !reviewMode && (
+            <>
+            <Input
               value={trxId} 
               onChange={(e) => setTrxId(e.target.value)} 
               placeholder="ট্রানজেকশন আইডি দিন" 
-              className="bg-white border-transparent text-gray-900 h-11 rounded-lg text-center text-sm font-bold focus-visible:ring-0 shadow-inner" 
+              className="bg-white border-transparent text-gray-900 h-11 rounded-lg text-center text-sm font-bold focus-visible:ring-0 shadow-inner"
             />
+
+            {failCount >= FAILS_BEFORE_REVIEW && (
+              <button
+                type="button"
+                onClick={openReview}
+                className="w-full rounded-lg bg-white py-2.5 px-3 text-center shadow-inner active:scale-[0.98] transition-transform animate-in fade-in slide-in-from-top-1 duration-300"
+              >
+                <span className="text-[11px] font-black text-[#10853D] underline decoration-dotted underline-offset-4">
+                  Not verified? Submit for admin review
+                </span>
+              </button>
+            )}
 
             <ul className="space-y-4 text-[11px] text-white font-medium leading-snug list-none p-0">
               <li className="flex gap-2">
@@ -219,11 +382,19 @@ export default function MethodPage() {
                 <span>এখন উপরের বক্সে আপনার <span className="text-yellow-300 font-black">Transaction ID</span> দিন এবং নিচের <span className="text-yellow-300 font-black">VERIFY</span> বাটনে ক্লিক করুন।</span>
               </li>
             </ul>
+            </>
+            )}
           </div>
         </div>
 
         <div className="fixed sm:static bottom-0 left-0 right-0 z-50 bg-white sm:bg-transparent px-0 sm:px-5 pb-0 sm:pb-5">
-          <Button disabled={isVerifying} onClick={handleVerify} className="w-full h-12 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.2em] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0">{isVerifying ? "VERIFYING..." : "VERIFY"}</Button>
+          {reviewSubmitted ? (
+            <Button disabled className="w-full h-12 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.2em] bg-amber-500 hover:bg-amber-500 shadow-md border-0 disabled:opacity-100">UNDER REVIEW</Button>
+          ) : reviewMode ? (
+            <Button disabled={isSubmittingReview} onClick={handleSubmitReview} className="w-full h-12 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.2em] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0">{isSubmittingReview ? "SUBMITTING..." : "SUBMIT"}</Button>
+          ) : (
+            <Button disabled={isVerifying} onClick={handleVerify} className="w-full h-12 sm:h-11 rounded-t-xl sm:rounded-b-xl rounded-b-none text-white font-black text-sm tracking-[0.2em] bg-[#10853D] hover:bg-[#0d6e32] shadow-md border-0">{isVerifying ? "VERIFYING..." : "VERIFY"}</Button>
+          )}
         </div>
       </div>
 
